@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aayushtronics AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <style>
+        :root {
+            --bg: #131314;
+            --sidebar-bg: #0b0b0c;
+            --surface: #1e1f20;
+            --surface-hover: #333538;
+            --text-primary: #e3e3e3;
+            --text-secondary: #c4c7c5;
+            --user-bubble: #1e1f20;
+            --border: #2a2b2d;
+            --accent: #3b6fe0;
+            --accent-soft: #8ab4f8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+        }
+
+        /* ---------------- SIDEBAR ---------------- */
+        #sidebar {
+            width: 268px;
+            min-width: 268px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            transition: margin-left 0.25s ease;
+        }
+
+        #sidebar.collapsed { margin-left: -268px; }
+
+        #sidebar-header {
+            padding: 18px 16px 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sidebar-logo { font-weight: 800; font-size: 1.05em; letter-spacing: -0.3px; color: #ffffff; white-space: nowrap; }
+        .sidebar-logo .dot { color: var(--accent); }
+
+        #new-chat-btn {
+            margin: 8px 12px 14px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--surface);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        #new-chat-btn:hover { background: var(--surface-hover); }
+
+        #history-label {
+            padding: 8px 20px 4px 20px;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #8a8d90;
+        }
+
+        #history-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .history-item {
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+        }
+        .history-item:hover { background: var(--surface); }
+        .history-item.active { background: var(--surface-hover); color: var(--text-primary); }
+        .history-item .del-btn { opacity: 0; font-size: 0.75rem; color: #9a9d9f; border: none; background: none; cursor: pointer; padding: 2px 4px; }
+        .history-item:hover .del-btn { opacity: 1; }
+        .history-item .del-btn:hover { color: #ff6b6b; }
+
+        #user-box {
+            border-top: 1px solid var(--border);
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            position: relative;
+        }
+        #user-box:hover { background: var(--surface); }
+
+        #user-avatar {
+            width: 30px; height: 30px; border-radius: 50%;
+            background: var(--accent); color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 600; font-size: 0.85rem; flex-shrink: 0;
+        }
+        #user-name-label { font-size: 0.85rem; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        #user-sub-label { font-size: 0.72rem; color: #8a8d90; }
+
+        /* ---------------- MAIN CHAT ---------------- */
+        #chat-container { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; min-width: 0; }
+
+        #chat-header {
+            padding: 18px 24px;
+            font-size: 1.3em;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: var(--bg);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        #sidebar-toggle-btn {
+            background: transparent; border: none; color: var(--text-secondary);
+            cursor: pointer; display: flex; align-items: center; padding: 6px; border-radius: 8px;
+        }
+        #sidebar-toggle-btn:hover { background: var(--surface); color: var(--text-primary); }
+
+        .header-logo { color: #ffffff; font-weight: 800; }
+        .header-logo .dot { color: var(--accent); }
+
+        #chat-window {
+            flex: 1;
+            padding: 24px 24px 120px 24px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            scroll-behavior: smooth;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .message-wrapper { display: flex; width: 100%; animation: fadeIn 0.4s ease-out forwards; opacity: 0; }
+
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(10px); }
+        }
+
+        .user-wrapper { justify-content: flex-end; }
+
+        .user-msg {
+            background: var(--user-bubble);
+            color: var(--text-primary);
+            padding: 12px 20px;
+            border-radius: 24px 24px 4px 24px;
+            max-width: 80%;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .bot-wrapper { justify-content: flex-start; gap: 16px; }
+
+        .bot-icon {
+            width: 32px; height: 32px; min-width: 32px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; background: #fff;
+        }
+        .bot-icon svg { width: 20px; height: 20px; }
+
+        .bot-msg { color: var(--text-primary); max-width: 85%; font-size: 1rem; line-height: 1.6; padding-top: 4px; }
+        .bot-msg p { margin: 0 0 0.6rem; }
+        .bot-msg p:last-child { margin-bottom: 0; }
+
+        /* Wiring / connections block */
+        .kb-connections {
+            margin-top: 0.7rem;
+            padding: 0.8rem 1rem;
+            border-radius: 14px;
+            background: rgba(59, 111, 224, 0.08);
+            border: 1px solid rgba(59, 111, 224, 0.25);
+            font-size: 0.86rem;
+        }
+        .kb-connections strong {
+            display: flex; align-items: center; gap: 0.4rem;
+            color: var(--accent-soft); font-size: 0.78rem;
+            text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.4rem;
+        }
+        .kb-connections ul { padding-left: 1.1rem; }
+        .kb-connections li { color: var(--text-secondary); margin-bottom: 0.25rem; }
+
+        /* Code block */
+        .kb-code { margin-top: 0.7rem; border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
+        .kb-code-head {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0.5rem 0.9rem;
+            background: rgba(255,255,255,0.04);
+            font-size: 0.76rem;
+            color: var(--text-secondary);
+        }
+        .kb-copy-btn {
+            display: flex; align-items: center; gap: 0.35rem;
+            font-size: 0.74rem;
+            color: var(--accent-soft);
+            padding: 0.25rem 0.6rem;
+            border-radius: 999px;
+            border: 1px solid rgba(59,111,224,0.35);
+            background: none;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+        .kb-copy-btn:hover { border-color: var(--accent-soft); }
+        .kb-code pre { margin: 0; padding: 0.9rem 1rem; background: #0a0a0b; overflow-x: auto; font-size: 0.78rem; line-height: 1.6; }
+        .kb-code code { font-family: 'Courier New', monospace; color: #cfe0ff; white-space: pre; }
+
+        /* Code explanation block */
+        .kb-explanation {
+            margin-top: 0.7rem;
+            padding: 0.8rem 1rem;
+            border-radius: 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            font-size: 0.86rem;
+        }
+        .kb-explanation strong {
+            display: flex; align-items: center; gap: 0.4rem;
+            color: var(--text-secondary); font-size: 0.78rem;
+            text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.4rem;
+        }
+        .kb-explanation p { color: var(--text-secondary); line-height: 1.6; margin: 0; }
+
+        .typing-dots span {
+            display: inline-block; width: 6px; height: 6px; margin-right: 3px;
+            border-radius: 50%; background: var(--text-secondary);
+            animation: blink 1.2s infinite;
+        }
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes blink { 0%, 80%, 100% { opacity: 0.2; } 40% { opacity: 1; } }
+
+        #input-area-wrapper {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            padding: 0 24px 20px 24px;
+            background: linear-gradient(transparent, var(--bg) 40%);
+        }
+
+        #input-area-inner { max-width: 900px; margin: 0 auto; }
+
+        #input-area {
+            display: flex; align-items: center;
+            background: var(--surface);
+            border-radius: 32px;
+            padding: 12px 16px 12px 24px;
+            gap: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: background 0.3s ease;
+        }
+        #input-area:focus-within { background: var(--surface-hover); }
+
+        #user-input {
+            flex: 1; background: transparent; color: var(--text-primary);
+            border: none; outline: none; font-family: 'Inter', sans-serif; font-size: 1rem;
+        }
+        #user-input::placeholder { color: var(--text-secondary); }
+
+        #send-btn {
+            background: transparent; color: var(--text-secondary); border: none;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            padding: 10px; border-radius: 50%; transition: color 0.2s, background 0.2s;
+        }
+        #send-btn:hover { background: rgba(255, 255, 255, 0.08); color: var(--text-primary); }
+
+        #chat-window::-webkit-scrollbar { width: 8px; }
+        #chat-window::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+        #chat-window::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
+        #history-list::-webkit-scrollbar { width: 6px; }
+        #history-list::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.12); border-radius: 10px; }
+
+        /* ---------------- LOGIN MODAL ---------------- */
+        #login-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.72);
+            backdrop-filter: blur(4px);
+            display: flex; align-items: center; justify-content: center; z-index: 100;
+        }
+
+        #login-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 36px 32px;
+            width: 90%;
+            max-width: 360px;
+            text-align: center;
+            animation: fadeIn 0.35s ease-out forwards;
+        }
+
+        #login-logo { font-weight: 800; font-size: 1.4em; color: #fff; margin-bottom: 6px; }
+        #login-logo .dot { color: var(--accent); }
+        #login-card p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 22px; }
+
+        #login-input {
+            width: 100%; background: var(--bg); border: 1px solid var(--border);
+            color: var(--text-primary); padding: 12px 16px; border-radius: 12px;
+            font-family: 'Inter', sans-serif; font-size: 0.95rem; outline: none; margin-bottom: 16px;
+        }
+        #login-input:focus { border-color: var(--accent); }
+
+        #login-submit {
+            width: 100%; background: var(--accent); color: #fff; border: none;
+            padding: 12px; border-radius: 12px; font-family: 'Inter', sans-serif;
+            font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: opacity 0.2s;
+        }
+        #login-submit:hover { opacity: 0.88; }
+
+        @media (max-width: 760px) {
+            #sidebar { position: fixed; z-index: 50; }
+            #sidebar:not(.collapsed) { margin-left: 0; box-shadow: 8px 0 24px rgba(0,0,0,0.4); }
+            #sidebar.collapsed { margin-left: -268px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOGIN / WELCOME MODAL -->
+    <div id="login-overlay">
+        <div id="login-card">
+            <div id="login-logo">Aayushtronics<span class="dot">.</span></div>
+            <p>Who's asking today? Tell me your name so I can tailor my answers to you.</p>
+            <input type="text" id="login-input" placeholder="Enter your name" autocomplete="off">
+            <button id="login-submit" onclick="submitLogin()">Continue</button>
+        </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div id="sidebar">
+        <div id="sidebar-header">
+            <div class="sidebar-logo">Aayushtronics<span class="dot">.</span></div>
+        </div>
+        <button id="new-chat-btn" onclick="startNewChat()">
+            <span class="material-symbols-outlined" style="font-size:18px;">add</span>
+            New chat
+        </button>
+        <div id="history-label">History</div>
+        <div id="history-list"></div>
+        <div id="user-box" onclick="promptRename()">
+            <div id="user-avatar">A</div>
+            <div>
+                <div id="user-name-label">Guest</div>
+                <div id="user-sub-label">Tap to change name</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CHAT -->
+    <div id="chat-container">
+        <div id="chat-header">
+            <button id="sidebar-toggle-btn" onclick="toggleSidebar()" title="Toggle sidebar">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+            <span class="header-logo">Aayushtronics<span class="dot">.</span></span>
+        </div>
+
+        <div id="chat-window"></div>
+
+        <div id="input-area-wrapper">
+            <div id="input-area-inner">
+                <div id="input-area">
+                    <input type="text" id="user-input" placeholder="Ask a hardware question..." onkeypress="handleKeyPress(event)" autocomplete="off">
+                    <button id="send-btn" onclick="sendMessage()" title="Send message">
+                        <span class="material-symbols-outlined">send</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ============================================================
+           STATE
+        ============================================================ */
+        const STORAGE_KEYS = {
+            NAME: 'aayushtronics_username',
+            CHATS: 'aayushtronics_chats',
+            ACTIVE: 'aayushtronics_active_chat'
+        };
+
+        let userName = localStorage.getItem(STORAGE_KEYS.NAME) || '';
+        let chats = JSON.parse(localStorage.getItem(STORAGE_KEYS.CHATS) || '[]');
+        let activeChatId = localStorage.getItem(STORAGE_KEYS.ACTIVE) || null;
+
+        const BOT_ICON_SVG = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.6601 23C11.5204 16.9247 6.64333 12.0476 0.567993 11.9079V11.0921C6.64333 10.9524 11.5204 6.0753 11.6601 0H12.4759C12.6156 6.0753 17.4927 10.9524 23.568 11.0921V11.9079C17.4927 12.0476 12.6156 16.9247 12.4759 23H11.6601Z" fill="#131314"/></svg>`;
+
+        /* ============================================================
+           INIT
+        ============================================================ */
+        window.onload = function () {
+            if (userName) {
+                document.getElementById('login-overlay').style.display = 'none';
+                applyUserToSidebar();
+            } else {
+                document.getElementById('login-overlay').style.display = 'flex';
+                document.getElementById('login-input').focus();
+            }
+
+            document.getElementById('login-input').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') submitLogin();
+            });
+
+            renderHistoryList();
+
+            if (activeChatId && chats.find(c => c.id === activeChatId)) {
+                loadChat(activeChatId);
+            } else if (chats.length > 0) {
+                loadChat(chats[0].id);
+            } else {
+                startNewChat(true);
+            }
+        };
+
+        function submitLogin() {
+            const val = document.getElementById('login-input').value.trim();
+            if (val === '') return;
+            userName = val;
+            localStorage.setItem(STORAGE_KEYS.NAME, userName);
+            document.getElementById('login-overlay').style.display = 'none';
+            applyUserToSidebar();
+
+            const chat = getActiveChat();
+            if (chat && chat.messages.length === 0) {
+                appendBotMessage({
+                    text: `Hey ${userName}! I'm your Aayushtronics electronics AI agent. Ask me about microcontrollers, components, sensors, protocols, or beginner circuit concepts — for basic components I'll include the wiring, the code, and an explanation of what the code does.`
+                });
+            }
+        }
+
+        function applyUserToSidebar() {
+            document.getElementById('user-avatar').textContent = userName.charAt(0).toUpperCase();
+            document.getElementById('user-name-label').textContent = userName;
+            document.getElementById('user-sub-label').textContent = 'Tap to change name';
+        }
+
+        function promptRename() {
+            const val = prompt('Update your name:', userName || '');
+            if (val && val.trim() !== '') {
+                userName = val.trim();
+                localStorage.setItem(STORAGE_KEYS.NAME, userName);
+                applyUserToSidebar();
+            }
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+        }
+
+        /* ============================================================
+           CHAT / HISTORY MANAGEMENT
+        ============================================================ */
+        function saveChats() {
+            localStorage.setItem(STORAGE_KEYS.CHATS, JSON.stringify(chats));
+            localStorage.setItem(STORAGE_KEYS.ACTIVE, activeChatId);
+        }
+
+        function getActiveChat() {
+            return chats.find(c => c.id === activeChatId) || null;
+        }
+
+        function startNewChat(silent) {
+            const id = 'chat_' + Date.now();
+            const chat = { id: id, title: 'New chat', messages: [] };
+            chats.unshift(chat);
+            activeChatId = id;
+            saveChats();
+            renderHistoryList();
+            renderChatWindow();
+
+            if (!silent) {
+                const greetName = userName ? `, ${userName}` : '';
+                appendBotMessage({ text: `New session started${greetName}. What would you like to know?` });
+            }
+        }
+
+        function loadChat(id) {
+            activeChatId = id;
+            saveChats();
+            renderHistoryList();
+            renderChatWindow();
+        }
+
+        function deleteChat(id, evt) {
+            evt.stopPropagation();
+            chats = chats.filter(c => c.id !== id);
+            if (activeChatId === id) {
+                if (chats.length > 0) {
+                    activeChatId = chats[0].id;
+                } else {
+                    startNewChat(true);
+                    return;
+                }
+            }
+            saveChats();
+            renderHistoryList();
+            renderChatWindow();
+        }
+
+        function renderHistoryList() {
+            const list = document.getElementById('history-list');
+            list.innerHTML = '';
+            chats.forEach(chat => {
+                const item = document.createElement('div');
+                item.className = 'history-item' + (chat.id === activeChatId ? ' active' : '');
+                item.onclick = () => loadChat(chat.id);
+
+                const titleSpan = document.createElement('span');
+                titleSpan.style.overflow = 'hidden';
+                titleSpan.style.textOverflow = 'ellipsis';
+                titleSpan.style.whiteSpace = 'nowrap';
+                titleSpan.textContent = chat.title;
+
+                const delBtn = document.createElement('button');
+                delBtn.className = 'del-btn';
+                delBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">close</span>';
+                delBtn.onclick = (e) => deleteChat(chat.id, e);
+
+                item.appendChild(titleSpan);
+                item.appendChild(delBtn);
+                list.appendChild(item);
+            });
+        }
+
+        function renderChatWindow() {
+            const chatWindow = document.getElementById('chat-window');
+            chatWindow.innerHTML = '';
+            const chat = getActiveChat();
+            if (!chat) return;
+
+            chat.messages.forEach(msg => {
+                if (msg.role === 'user') {
+                    renderUserBubble(msg.text);
+                } else {
+                    renderBotBubble(msg);
+                }
+            });
+            scrollToBottom(chatWindow);
+        }
+
+        function setChatTitleFromFirstMessage(text) {
+            const chat = getActiveChat();
+            if (chat && chat.title === 'New chat') {
+                chat.title = text.length > 32 ? text.slice(0, 32) + '…' : text;
+                saveChats();
+                renderHistoryList();
+            }
+        }
+
+        /* ============================================================
+           UI HELPERS
+        ============================================================ */
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') sendMessage();
+        }
+
+        function sendMessage() {
+            const inputField = document.getElementById('user-input');
+            const messageText = inputField.value.trim();
+            if (messageText === '') return;
+
+            appendUserMessage(messageText);
+            inputField.value = '';
+            setChatTitleFromFirstMessage(messageText);
+
+            showTypingIndicator();
+            setTimeout(() => {
+                removeTypingIndicator();
+                const botReply = getBotResponse(messageText);
+                appendBotMessage(botReply);
+            }, 550 + Math.random() * 350);
+        }
+
+        function appendUserMessage(text) {
+            const chat = getActiveChat();
+            if (chat) chat.messages.push({ role: 'user', text: text });
+            saveChats();
+            renderUserBubble(text);
+            scrollToBottom(document.getElementById('chat-window'));
+        }
+
+        // payload: { text, connections?, code?, codeExplanation? }
+        function appendBotMessage(payload) {
+            const chat = getActiveChat();
+            if (chat) chat.messages.push({ role: 'bot', text: payload.text, connections: payload.connections, code: payload.code, codeExplanation: payload.codeExplanation });
+            saveChats();
+            renderBotBubble(payload);
+            scrollToBottom(document.getElementById('chat-window'));
+        }
+
+        function renderUserBubble(text) {
+            const chatWindow = document.getElementById('chat-window');
+            const wrapper = document.createElement('div');
+            wrapper.className = 'message-wrapper user-wrapper';
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'user-msg';
+            msgDiv.textContent = text;
+            wrapper.appendChild(msgDiv);
+            chatWindow.appendChild(wrapper);
+        }
+
+        function escapeHtml(str) {
+            return String(str).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+        }
+
+        // Renders a bot message that may include a wiring "Connections" list and/or a copyable code block
+        function renderBotBubble(msg) {
+            const chatWindow = document.getElementById('chat-window');
+            const wrapper = document.createElement('div');
+            wrapper.className = 'message-wrapper bot-wrapper';
+
+            const iconDiv = document.createElement('div');
+            iconDiv.className = 'bot-icon';
+            iconDiv.innerHTML = BOT_ICON_SVG;
+
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'bot-msg';
+            let html = `<p>${escapeHtml(msg.text)}</p>`;
+
+            if (msg.connections && msg.connections.length) {
+                html += '<div class="kb-connections"><strong><span class="material-symbols-outlined" style="font-size:15px;">bolt</span>Connections</strong><ul>';
+                msg.connections.forEach((c) => { html += `<li>${escapeHtml(c)}</li>`; });
+                html += '</ul></div>';
+            }
+
+            let codeId = null;
+            if (msg.code) {
+                codeId = 'kbcode-' + Math.random().toString(36).slice(2);
+                html += `<div class="kb-code">
+                    <div class="kb-code-head">
+                        <span>Copy-paste ready</span>
+                        <button type="button" class="kb-copy-btn" data-target="${codeId}">
+                            <span class="material-symbols-outlined" style="font-size:14px;">content_copy</span>Copy
+                        </button>
+                    </div>
+                    <pre id="${codeId}"><code>${escapeHtml(msg.code)}</code></pre>
+                </div>`;
+            }
+
+            if (msg.codeExplanation) {
+                html += `<div class="kb-explanation"><strong><span class="material-symbols-outlined" style="font-size:15px;">info</span>How the code works</strong><p>${escapeHtml(msg.codeExplanation)}</p></div>`;
+            }
+
+            msgDiv.innerHTML = html;
+
+            wrapper.appendChild(iconDiv);
+            wrapper.appendChild(msgDiv);
+            chatWindow.appendChild(wrapper);
+
+            if (codeId) {
+                const btn = msgDiv.querySelector('.kb-copy-btn');
+                btn.addEventListener('click', () => {
+                    const codeEl = document.getElementById(codeId);
+                    if (!codeEl) return;
+                    navigator.clipboard?.writeText(codeEl.innerText).then(() => {
+                        const original = btn.innerHTML;
+                        btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:14px;">check</span>Copied';
+                        setTimeout(() => { btn.innerHTML = original; }, 1600);
+                    });
+                });
+            }
+        }
+
+        let typingWrapperRef = null;
+        function showTypingIndicator() {
+            const chatWindow = document.getElementById('chat-window');
+            const wrapper = document.createElement('div');
+            wrapper.className = 'message-wrapper bot-wrapper';
+            wrapper.id = 'typing-wrapper';
+            const iconDiv = document.createElement('div');
+            iconDiv.className = 'bot-icon';
+            iconDiv.innerHTML = BOT_ICON_SVG;
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'bot-msg typing-dots';
+            msgDiv.innerHTML = '<span></span><span></span><span></span>';
+            wrapper.appendChild(iconDiv);
+            wrapper.appendChild(msgDiv);
+            chatWindow.appendChild(wrapper);
+            typingWrapperRef = wrapper;
+            scrollToBottom(chatWindow);
+        }
+
+        function removeTypingIndicator() {
+            if (typingWrapperRef) {
+                typingWrapperRef.remove();
+                typingWrapperRef = null;
+            }
+        }
+
+        function scrollToBottom(element) {
+            setTimeout(() => {
+                element.scrollTo({ top: element.scrollHeight, behavior: 'smooth' });
+            }, 10);
+        }
+
+        /* ============================================================
+           KNOWLEDGE BASE
+           Each entry:
+             id:        unique string (kept for reference/debugging)
+             keywords:  OR-matched words/phrases that trigger this entry
+             reply:     plain-text explanation
+             connections (optional): array of "Part A → Part B" wiring steps
+             code (optional): copy-paste ready Arduino/C++/Python snippet
+             codeExplanation (optional): plain-text walkthrough of what the
+               code above actually does, shown right under the code block
+
+           Matching: normalize the user input, then find every entry with at
+           least one keyword appearing in it (substring match — so a single
+           word like "esp32" matches, and so does "what is esp32"). Among all
+           matches, the entry with the LONGEST matching keyword wins (most
+           specific match takes priority over a generic one).
+        ============================================================ */
+        const KB = [
+            // ---------- GREETINGS / META ----------
+            { id: "greet", keywords: ["hello", "hi", "hey", "yo "], reply: "Greetings{name}! Ready to troubleshoot some circuits or learn basic electronics?" },
+            { id: "help", keywords: ["help", "what can you do"], reply: "I can help with hardware specs, circuit concepts, components, microcontrollers, sensors, communication protocols, PCB design, and robotics — and for hands-on components I'll include wiring connections and copy-paste code. Try \"esp32\", \"i2c\", or \"blink led\"." },
+            { id: "who", keywords: ["who are you", "your name"], reply: "I'm the Aayushtronics AI agent — a hardware and embedded-systems assistant built to answer your electronics questions." },
+            { id: "thanks", keywords: ["thank"], reply: "Anytime{name}! Ask away whenever you're stuck on a circuit." },
+            { id: "bye", keywords: ["bye", "goodbye", "see you"], reply: "Powering down. Happy tinkering{name}!" },
+
+            // ---------- CODE LIBRARY: hands-on components with wiring + code ----------
+            {
+                id: "led-blink",
+                keywords: ["blink", "blink led", "led blink", "turn on led", "first arduino program"],
+                reply: "The classic first project. An LED's long leg (anode) goes to a digital pin through a resistor, and the short leg (cathode) goes to GND.",
+                connections: [
+                    "Arduino Pin 13 → 220Ω resistor → LED anode (long leg)",
+                    "LED cathode (short leg) → Arduino GND"
+                ],
+                code: `#define LED_PIN 13
+
+void setup() {
+  pinMode(LED_PIN, OUTPUT);
+}
+
+void loop() {
+  digitalWrite(LED_PIN, HIGH); // LED on
+  delay(1000);
+  digitalWrite(LED_PIN, LOW);  // LED off
+  delay(1000);
+}`,
+                codeExplanation: "pinMode() sets pin 13 as an OUTPUT so it can drive the LED. Inside loop(), digitalWrite(HIGH) sends 5V to light the LED, delay(1000) pauses for one second, then digitalWrite(LOW) cuts the voltage to turn it off before pausing again — loop() repeats this forever, producing the blink."
+            },
+            {
+                id: "esp32-wifi",
+                keywords: ["esp32 wifi", "connect esp32 to wifi", "esp32 internet", "esp32 network"],
+                reply: "ESP32 has Wi-Fi built into the chip — no extra module needed. Just call WiFi.begin() with your network credentials.",
+                connections: [
+                    "No external wiring needed — the Wi-Fi radio is on-chip",
+                    "Power ESP32 via USB or a regulated 3.3V supply"
+                ],
+                code: `#include <WiFi.h>
+
+const char* ssid = "YOUR_WIFI_NAME";
+const char* password = "YOUR_WIFI_PASSWORD";
+
+void setup() {
+  Serial.begin(115200);
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("\\nConnected! IP address:");
+  Serial.println(WiFi.localIP());
+}
+
+void loop() {}`,
+                codeExplanation: "WiFi.begin() starts the connection attempt using your network name and password. The while loop checks WiFi.status() every 500ms and keeps waiting until it returns WL_CONNECTED. Once connected, WiFi.localIP() prints the IP address the router assigned to the ESP32, confirming it's online."
+            },
+            {
+                id: "ultrasonic",
+                keywords: ["hc-sr04", "ultrasonic", "distance sensor", "measure distance"],
+                reply: "The HC-SR04 sends an ultrasonic pulse from TRIG and listens for the echo on ECHO. The time the echo takes tells you the distance.",
+                connections: [
+                    "HC-SR04 VCC → Arduino 5V",
+                    "HC-SR04 GND → Arduino GND",
+                    "HC-SR04 TRIG → Arduino Pin 9",
+                    "HC-SR04 ECHO → Arduino Pin 10"
+                ],
+                code: `#define TRIG_PIN 9
+#define ECHO_PIN 10
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
+}
+
+void loop() {
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
+
+  long duration = pulseIn(ECHO_PIN, HIGH);
+  float distanceCm = duration * 0.034 / 2;
+
+  Serial.print("Distance: ");
+  Serial.print(distanceCm);
+  Serial.println(" cm");
+  delay(300);
+}`,
+                codeExplanation: "A short LOW then a 10-microsecond HIGH pulse on TRIG tells the sensor to send out a burst of ultrasound. pulseIn(ECHO_PIN, HIGH) measures how long ECHO stays HIGH — the round-trip time of the echo. That duration is converted to centimeters using the speed of sound (0.034 cm per microsecond), divided by 2 since the sound travels there and back."
+            },
+            {
+                id: "servo-control",
+                keywords: ["servo motor", "sg90", "move servo", "control servo"],
+                reply: "Servos take a PWM signal on one wire and use the built-in Servo library to move to any angle from 0-180 degrees.",
+                connections: [
+                    "Servo red wire → Arduino 5V",
+                    "Servo brown/black wire → Arduino GND",
+                    "Servo orange/yellow signal wire → Arduino Pin 9"
+                ],
+                code: `#include <Servo.h>
+
+Servo myServo;
+
+void setup() {
+  myServo.attach(9);
+}
+
+void loop() {
+  myServo.write(0);    // rotate to 0 degrees
+  delay(1000);
+  myServo.write(90);   // rotate to 90 degrees
+  delay(1000);
+  myServo.write(180);  // rotate to 180 degrees
+  delay(1000);
+}`,
+                codeExplanation: "myServo.attach(9) links the Servo object to pin 9, which sends it PWM pulses. myServo.write(angle) tells the library to move the horn to that angle (0-180°) — internally it converts the angle into the correct pulse width automatically. The delays give the servo time to physically reach each position before moving to the next."
+            },
+            {
+                id: "oled-display",
+                keywords: ["oled", "ssd1306", "display text", "i2c display"],
+                reply: "The SSD1306 OLED talks over I2C. You'll need the Adafruit_SSD1306 and Adafruit_GFX libraries from the Library Manager.",
+                connections: [
+                    "OLED VCC → 3.3V or 5V (check your module)",
+                    "OLED GND → GND",
+                    "OLED SDA → Arduino A4 (or ESP32 GPIO 21)",
+                    "OLED SCL → Arduino A5 (or ESP32 GPIO 22)"
+                ],
+                code: `#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+Adafruit_SSD1306 display(128, 64, &Wire, -1);
+
+void setup() {
+  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0, 0);
+  display.println("Hello, Aayushtronics!");
+  display.display();
+}
+
+void loop() {}`,
+                codeExplanation: "display.begin() initializes the screen over I2C at address 0x3C. clearDisplay() wipes any old content from the buffer, setTextSize/setTextColor style the text, and setCursor(0,0) places it in the top-left corner. display.println() writes text into an internal buffer, and display.display() is what actually pushes that buffer to the physical screen."
+            },
+            {
+                id: "hc05-bluetooth",
+                keywords: ["hc-05", "bluetooth module", "wireless control"],
+                reply: "HC-05 is a serial Bluetooth bridge — anything sent from a phone app over Bluetooth arrives on Arduino's Serial port.",
+                connections: [
+                    "HC-05 VCC → Arduino 5V",
+                    "HC-05 GND → Arduino GND",
+                    "HC-05 TXD → Arduino RX (or use SoftwareSerial)",
+                    "HC-05 RXD → Arduino TX through a voltage divider (HC-05 RX is 3.3V only)"
+                ],
+                code: `#include <SoftwareSerial.h>
+
+SoftwareSerial BT(2, 3); // RX, TX
+
+void setup() {
+  Serial.begin(9600);
+  BT.begin(9600);
+}
+
+void loop() {
+  if (BT.available()) {
+    char c = BT.read();
+    Serial.write(c); // echo Bluetooth data to Serial Monitor
+  }
+}`,
+                codeExplanation: "SoftwareSerial creates a second serial port on pins 2 and 3 so the hardware Serial port stays free for the USB/Serial Monitor connection. BT.available() checks if the HC-05 has received a byte over Bluetooth; if so, BT.read() grabs it and Serial.write(c) echoes it to the Serial Monitor so you can see what was sent from the phone."
+            },
+            {
+                id: "relay-switching",
+                keywords: ["relay module", "switch appliance", "control ac device"],
+                reply: "A relay module lets a low-voltage pin switch a high-voltage/high-current load safely, using an electromagnet to flip a physical switch.",
+                connections: [
+                    "Relay VCC → Arduino 5V",
+                    "Relay GND → Arduino GND",
+                    "Relay IN → Arduino Pin 7",
+                    "Mains wiring (COM/NO/NC) should only be done by someone comfortable with AC safety"
+                ],
+                code: `#define RELAY_PIN 7
+
+void setup() {
+  pinMode(RELAY_PIN, OUTPUT);
+}
+
+void loop() {
+  digitalWrite(RELAY_PIN, HIGH); // energize relay
+  delay(2000);
+  digitalWrite(RELAY_PIN, LOW);  // de-energize
+  delay(2000);
+}`,
+                codeExplanation: "digitalWrite(RELAY_PIN, HIGH) sends 5V to the relay module's IN pin, which energizes its internal electromagnet and flips the switch contacts to connect COM to NO — turning the connected device on. digitalWrite(LOW) removes that signal, releasing the switch back to COM/NC (off), with a 2-second pause on each side."
+            },
+            {
+                id: "rpi-gpio",
+                keywords: ["raspberry pi gpio", "pi led", "rpi python", "gpio pin raspberry"],
+                reply: "Raspberry Pi runs full Linux, so you control GPIO pins with Python using the RPi.GPIO (or gpiozero) library instead of Arduino-style C++.",
+                connections: [
+                    "LED anode → 330Ω resistor → GPIO 17 (physical pin 11)",
+                    "LED cathode → GND (physical pin 9)"
+                ],
+                code: `import RPi.GPIO as GPIO
+import time
+
+LED_PIN = 17
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(LED_PIN, GPIO.OUT)
+
+try:
+    while True:
+        GPIO.output(LED_PIN, GPIO.HIGH)
+        time.sleep(1)
+        GPIO.output(LED_PIN, GPIO.LOW)
+        time.sleep(1)
+except KeyboardInterrupt:
+    GPIO.cleanup()`,
+                codeExplanation: "GPIO.setmode(GPIO.BCM) selects Broadcom pin numbering, and GPIO.setup() configures pin 17 as an output. The while loop turns the pin HIGH (LED on), waits a second, then LOW (LED off) and waits again — just like Arduino's blink pattern, but in Python. The try/except catches Ctrl+C so GPIO.cleanup() can reset the pins safely on exit."
+            },
+            {
+                id: "rc522-rfid",
+                keywords: ["rc522", "rfid reader", "access control", "card reader"],
+                reply: "The RC522 talks over SPI. The MFRC522 library reads each card's unique ID (UID), which you can compare against an allowed list.",
+                connections: [
+                    "RC522 SDA → Arduino Pin 10",
+                    "RC522 SCK → Arduino Pin 13",
+                    "RC522 MOSI → Arduino Pin 11",
+                    "RC522 MISO → Arduino Pin 12",
+                    "RC522 GND → Arduino GND, RC522 3.3V → Arduino 3.3V (not 5V)"
+                ],
+                code: `#include <SPI.h>
+#include <MFRC522.h>
+
+#define SS_PIN 10
+#define RST_PIN 9
+MFRC522 rfid(SS_PIN, RST_PIN);
+
+void setup() {
+  Serial.begin(9600);
+  SPI.begin();
+  rfid.PCD_Init();
+}
+
+void loop() {
+  if (!rfid.PICC_IsNewCardPresent() || !rfid.PICC_ReadCardSerial()) return;
+  Serial.print("Card UID: ");
+  for (byte i = 0; i < rfid.uid.size; i++) {
+    Serial.print(rfid.uid.uidByte[i], HEX);
+  }
+  Serial.println();
+  rfid.PICC_HaltA();
+}`,
+                codeExplanation: "rfid.PCD_Init() starts the reader over SPI. In loop(), PICC_IsNewCardPresent() and PICC_ReadCardSerial() check whether a new card is in range and read its data — if either fails, return exits early and tries again next loop. Once a card is read, the for loop prints each byte of its unique ID (rfid.uid.uidByte) in hexadecimal, and PICC_HaltA() stops communication with that card so the reader is ready for the next one."
+            },
+
+            // ---------- FUNDAMENTALS ----------
+            { id: "resistor", keywords: ["resistor"], reply: "A resistor limits current flow in a circuit and creates a voltage drop, measured in ohms (Ω). Resistance is calculated using Ohm's Law: V = I × R." },
+            { id: "resistor-value", keywords: ["resistor value", "what resistor", "resistor for led"], reply: "Use Ohm's Law: R = (Supply Voltage − LED forward voltage) ÷ desired current. For a 5V supply, a standard red LED (~2V forward voltage) and 15mA current, that's about (5-2)/0.015 ≈ 200Ω — a 220Ω resistor is the common safe choice." },
+            { id: "capacitor", keywords: ["capacitor"], reply: "A capacitor stores electrical energy in an electric field between two plates. It's used for filtering, decoupling, timing, and smoothing power supply ripple, measured in farads (F)." },
+            { id: "inductor", keywords: ["inductor"], reply: "An inductor stores energy in a magnetic field and is commonly used in filters, chokes, and switching power supplies." },
+            { id: "diode", keywords: ["diode"], reply: "A diode allows current to flow in only one direction, used for rectification, protection, and signal demodulation." },
+            { id: "zener", keywords: ["zener diode"], reply: "A Zener diode is designed to operate in reverse breakdown, providing a stable reference voltage for voltage regulation circuits." },
+            { id: "led-general", keywords: ["led"], reply: "An LED (Light Emitting Diode) emits light when current flows through it in the forward direction. Always use a current-limiting resistor to protect it." },
+            { id: "photodiode", keywords: ["photodiode"], reply: "A photodiode converts light into an electrical current and is used in light sensors and optical receivers." },
+            { id: "npn", keywords: ["npn transistor"], reply: "An NPN transistor conducts when a positive current is applied to its base, allowing current to flow from collector to emitter." },
+            { id: "pnp", keywords: ["pnp transistor"], reply: "A PNP transistor conducts when the base is pulled low relative to the emitter, allowing current to flow from emitter to collector." },
+            { id: "mosfet", keywords: ["mosfet"], reply: "A MOSFET is a voltage-controlled transistor mainly used for high-speed switching and power control in circuits like motor drivers and SMPS." },
+            { id: "bjt", keywords: ["bjt", "bipolar junction transistor"], reply: "A Bipolar Junction Transistor (BJT) is a current-controlled semiconductor device used for switching and amplification." },
+            { id: "scr", keywords: ["thyristor", "scr"], reply: "A Thyristor (SCR) is a four-layer semiconductor device used as a switch in high-power AC control applications like dimmers and motor controllers." },
+            { id: "triac", keywords: ["triac"], reply: "A TRIAC conducts current in both directions and is commonly used for AC power control, such as in light dimmers." },
+            { id: "igbt", keywords: ["igbt"], reply: "An IGBT combines the fast switching of a MOSFET with the high-current handling of a BJT, widely used in motor drives and inverters." },
+            { id: "ohms-law", keywords: ["ohm's law", "ohms law"], reply: "Ohm's Law states V = I × R, where V is voltage, I is current, and R is resistance." },
+            { id: "kirchhoff", keywords: ["kirchhoff"], reply: "Kirchhoff's Current Law (KCL) states current entering a node equals current leaving it. Kirchhoff's Voltage Law (KVL) states the sum of voltages around a closed loop equals zero." },
+            { id: "series", keywords: ["series circuit"], reply: "In a series circuit, components are connected end-to-end so the same current flows through all of them, while voltage divides across each." },
+            { id: "parallel", keywords: ["parallel circuit"], reply: "In a parallel circuit, components share the same voltage across them while current divides between the branches." },
+            { id: "short-circuit", keywords: ["short circuit"], reply: "A short circuit is an unintended low-resistance path that causes excessive current flow, which can damage components or cause fire — always use fuses for protection." },
+            { id: "open-circuit", keywords: ["open circuit"], reply: "An open circuit is a break in the current path, meaning no current can flow through that branch." },
+            { id: "ground", keywords: ["ground", "gnd"], reply: "Ground (GND) is the common reference point in a circuit that all voltages are measured against, and the return path for current." },
+            { id: "breadboard", keywords: ["breadboard"], reply: "A breadboard lets you build and test circuits without soldering, using rows of connected holes for temporary component connections." },
+            { id: "multimeter", keywords: ["multimeter"], reply: "A multimeter measures voltage, current, and resistance, and is the most essential diagnostic tool for electronics work." },
+            { id: "oscilloscope", keywords: ["oscilloscope"], reply: "An oscilloscope visualizes how a voltage signal changes over time, essential for debugging timing, frequency, and noise issues." },
+            { id: "function-generator", keywords: ["function generator"], reply: "A function generator produces test waveforms like sine, square, and triangle waves at adjustable frequencies for circuit testing." },
+            { id: "soldering", keywords: ["soldering iron", "soldering"], reply: "A soldering iron heats solder to join electronic components to a PCB or wires, forming a permanent electrical connection." },
+            { id: "fuse", keywords: ["fuse"], reply: "A fuse protects a circuit by breaking the connection if current exceeds a safe threshold, preventing damage from overcurrent." },
+            { id: "esd", keywords: ["esd", "static electricity"], reply: "ESD (Electrostatic Discharge) is a sudden static electricity flow that can damage sensitive components — anti-static wrist straps and mats help prevent it." },
+
+            // ---------- POWER ----------
+            { id: "battery", keywords: ["battery"], reply: "A battery provides DC power to electronic circuits. Common types include AA batteries, Li-ion cells (3.7V), and LiPo batteries used in robotics." },
+            { id: "power-supply", keywords: ["power supply"], reply: "A power supply converts AC mains voltage into regulated DC voltage like 5V, 9V, or 12V for electronic circuits." },
+            { id: "adapter", keywords: ["adapter"], reply: "A DC adapter converts AC wall voltage into DC output to safely power electronic devices." },
+            { id: "voltage-regulator", keywords: ["voltage regulator"], reply: "A voltage regulator keeps the output voltage constant even when the input voltage or load current changes." },
+            { id: "7805", keywords: ["7805"], reply: "The 7805 is a popular linear voltage regulator that provides a stable 5V output from a higher input voltage." },
+            { id: "lm317", keywords: ["lm317"], reply: "LM317 is an adjustable linear voltage regulator that can provide output voltages from about 1.25V to 37V." },
+            { id: "buck", keywords: ["buck converter"], reply: "A buck converter is a switching regulator that steps DC voltage down efficiently, commonly used in battery-powered devices." },
+            { id: "boost", keywords: ["boost converter"], reply: "A boost converter is a switching regulator that steps DC voltage up, used when you need a higher output than your source voltage." },
+            { id: "smps", keywords: ["smps"], reply: "An SMPS (Switch Mode Power Supply) regulates voltage using high-frequency switching, offering higher efficiency and smaller size than linear supplies." },
+            { id: "liion", keywords: ["li-ion", "li ion battery", "lithium ion"], reply: "Li-ion batteries offer high energy density and a nominal voltage of 3.7V, commonly used in phones, laptops, and robotics." },
+            { id: "lipo", keywords: ["lipo"], reply: "LiPo (Lithium Polymer) batteries are lightweight and high-discharge, popular in drones and RC vehicles — handle them carefully as they're fire-sensitive if damaged." },
+            { id: "tp4056", keywords: ["tp4056", "charging module"], reply: "The TP4056 is a common Li-ion/LiPo battery charging module that manages safe constant-current/constant-voltage charging." },
+            { id: "solar", keywords: ["solar panel"], reply: "A solar panel converts sunlight into DC electricity using photovoltaic cells, often paired with a charge controller for battery charging." },
+            { id: "ups", keywords: ["ups"], reply: "A UPS (Uninterruptible Power Supply) provides backup battery power instantly during a mains power failure." },
+
+            // ---------- ICS / ANALOG ----------
+            { id: "opamp", keywords: ["op amp", "op-amp", "operational amplifier"], reply: "An Operational Amplifier (Op-Amp) amplifies the voltage difference between its two inputs and is widely used in analog signal processing." },
+            { id: "lm358", keywords: ["lm358"], reply: "LM358 is a dual operational amplifier IC commonly used in sensor signal-conditioning circuits." },
+            { id: "555timer", keywords: ["555 timer", "ne555"], reply: "The NE555 Timer IC generates precise time delays, oscillations (astable mode), and PWM signals, and is a staple of analog electronics." },
+            { id: "crystal", keywords: ["crystal oscillator"], reply: "A crystal oscillator provides a highly accurate clock signal for microcontrollers using the mechanical resonance of a quartz crystal." },
+            { id: "logic-gate", keywords: ["logic gate"], reply: "Logic gates perform Boolean operations on binary inputs. Common gates are AND, OR, NOT, NAND, NOR, XOR, and XNOR." },
+            { id: "and-gate", keywords: ["and gate"], reply: "An AND gate outputs HIGH only when all its inputs are HIGH." },
+            { id: "or-gate", keywords: ["or gate"], reply: "An OR gate outputs HIGH if at least one of its inputs is HIGH." },
+            { id: "not-gate", keywords: ["not gate"], reply: "A NOT gate (inverter) flips the input signal — HIGH becomes LOW and vice versa." },
+            { id: "nand-gate", keywords: ["nand gate"], reply: "A NAND gate is the inverse of an AND gate and is known as a universal gate, since any logic function can be built from NAND gates alone." },
+            { id: "nor-gate", keywords: ["nor gate"], reply: "A NOR gate is the inverse of an OR gate and, like NAND, is a universal gate." },
+            { id: "xor-gate", keywords: ["xor gate"], reply: "An XOR gate outputs HIGH only when its inputs differ from each other." },
+            { id: "flipflop", keywords: ["flip flop"], reply: "A flip-flop stores one bit of data and is a building block for registers, counters, and other sequential memory circuits." },
+            { id: "mux", keywords: ["multiplexer", "mux"], reply: "A multiplexer (MUX) selects one input from multiple inputs and forwards it to a single output, based on select lines." },
+            { id: "demux", keywords: ["demultiplexer", "demux"], reply: "A demultiplexer takes a single input and routes it to one of several outputs, based on select lines." },
+            { id: "decoder", keywords: ["decoder"], reply: "A decoder converts a binary code into multiple individual output lines, activating one output at a time." },
+            { id: "counter-ic", keywords: ["counter ic"], reply: "A counter IC increments or decrements its output state with each clock pulse, used for frequency division and event counting." },
+            { id: "shift-register", keywords: ["shift register"], reply: "A shift register moves data bit-by-bit through a chain of flip-flops, often used to expand output pins (e.g. the 74HC595)." },
+            { id: "eeprom", keywords: ["eeprom"], reply: "EEPROM is non-volatile memory that retains data even after power loss, and can be electrically erased and rewritten." },
+
+            // ---------- MICROCONTROLLERS / BOARDS ----------
+            { id: "uno", keywords: ["arduino uno"], reply: "The Arduino Uno is a beginner-friendly ATmega328P-based board with 14 digital pins and 6 analog inputs — great for learning electronics." },
+            { id: "nano", keywords: ["arduino nano"], reply: "The Arduino Nano is a compact, breadboard-friendly board with the same ATmega328P chip as the Uno, ideal for space-constrained projects." },
+            { id: "mega", keywords: ["arduino mega"], reply: "The Arduino Mega uses an ATmega2560 chip with 54 digital pins and 16 analog inputs, suited for projects needing many I/O pins." },
+            { id: "leonardo", keywords: ["arduino leonardo"], reply: "The Arduino Leonardo uses an ATmega32u4 with built-in USB support, letting it act as a keyboard or mouse to a computer." },
+            { id: "arduino-ide", keywords: ["arduino ide"], reply: "Arduino IDE is the official software used for writing, compiling, and uploading Arduino programs to a board." },
+            { id: "esp32", keywords: ["esp32"], reply: "ESP32 is a low-cost, low-power SoC with built-in Wi-Fi and Bluetooth/BLE, a dual-core processor, and rich peripherals (ADC, DAC, PWM, I2C, SPI, UART) — a favorite for IoT projects." },
+            { id: "esp8266", keywords: ["esp8266"], reply: "ESP8266 is a low-cost Wi-Fi microcontroller, simpler than the ESP32 with a single core and fewer GPIOs, popular for basic IoT projects." },
+            { id: "raspberrypi", keywords: ["raspberry pi"], reply: "Raspberry Pi is a full single-board computer running Linux, suited for projects needing more processing power, storage, or a display, unlike simpler microcontroller boards." },
+            { id: "board-comparison", keywords: ["raspberry pi vs arduino", "difference between arduino and raspberry pi", "which board should i use", "arduino vs esp32"], reply: "Arduino Uno: simple, no OS, great for learning digital/analog I/O — best for beginners and low-power sensor/actuator projects. ESP32: same idea as Arduino but with built-in Wi-Fi/Bluetooth and much more processing power — best for IoT. Raspberry Pi: a full Linux computer with GPIO pins — best when you need a camera, a display, networking stacks, or to run Python alongside hardware control." },
+            { id: "stm32", keywords: ["stm32"], reply: "STM32 is a family of ARM Cortex-M based microcontrollers from STMicroelectronics, offering high performance for industrial and embedded applications." },
+            { id: "pic", keywords: ["pic microcontroller", "pic mcu"], reply: "PIC microcontrollers (from Microchip) are widely used in embedded systems for their low cost, reliability, and simple architecture." },
+            { id: "8051", keywords: ["8051"], reply: "The 8051 is a classic 8-bit microcontroller architecture from Intel, still taught widely for learning embedded systems fundamentals." },
+            { id: "avr", keywords: ["avr"], reply: "AVR is the 8-bit microcontroller architecture used in classic Arduino boards (e.g. ATmega328P), known for simplicity and ease of use." },
+            { id: "arm", keywords: ["arm cortex", "arm processor"], reply: "ARM Cortex processors are widely used in microcontrollers (like STM32 and ESP32) for their efficiency and strong performance-per-watt." },
+            { id: "mcu-vs-mpu", keywords: ["microcontroller vs microprocessor", "difference between microcontroller and microprocessor"], reply: "A microcontroller integrates CPU, RAM, ROM, and I/O on a single chip for embedded tasks, while a microprocessor needs external memory and peripherals and is used for general-purpose computing." },
+            { id: "clock-speed", keywords: ["clock speed"], reply: "Clock speed defines how many operations per second a microcontroller can perform, measured in Hz (e.g. 16MHz, 240MHz)." },
+            { id: "flash-memory", keywords: ["flash memory"], reply: "Flash memory stores the program code on a microcontroller and retains data even without power." },
+            { id: "ram", keywords: ["ram"], reply: "RAM (Random Access Memory) is volatile memory used to store variables and temporary data while a program runs." },
+            { id: "rom", keywords: ["rom"], reply: "ROM (Read-Only Memory) stores permanent data or firmware that isn't meant to change during normal operation." },
+            { id: "interrupt", keywords: ["interrupt"], reply: "An interrupt lets a microcontroller pause its normal program flow to immediately respond to an event, then resume where it left off." },
+            { id: "watchdog", keywords: ["watchdog timer"], reply: "A watchdog timer automatically resets the microcontroller if the program hangs or fails to respond within a set time, improving reliability." },
+            { id: "bootloader", keywords: ["bootloader"], reply: "A bootloader is small firmware that runs at startup, allowing new program code to be uploaded to a microcontroller (e.g. via USB)." },
+            { id: "firmware", keywords: ["firmware"], reply: "Firmware is the low-level software programmed directly onto a microcontroller or hardware device to control its behavior." },
+            { id: "rtos", keywords: ["rtos"], reply: "An RTOS (Real-Time Operating System) schedules multiple tasks with predictable timing, useful for complex embedded projects needing multitasking." },
+
+            // ---------- PROGRAMMING ----------
+            { id: "digital-pin", keywords: ["digital pin"], reply: "Digital pins can read HIGH/LOW input signals or output HIGH/LOW voltages, used for buttons, LEDs, and digital sensors." },
+            { id: "analog-pin", keywords: ["analog pin"], reply: "Analog pins read varying voltage levels using the microcontroller's built-in ADC, useful for sensors like potentiometers and LDRs." },
+            { id: "serial-monitor", keywords: ["serial monitor"], reply: "The Serial Monitor displays messages sent from the board using Serial.print(), useful for debugging." },
+            { id: "pwm", keywords: ["pwm"], reply: "PWM (Pulse Width Modulation) simulates an analog output by rapidly switching a digital pin, used for LED dimming and motor speed control." },
+            { id: "analogread", keywords: ["analogread"], reply: "analogRead() reads an analog voltage and returns a value, typically between 0 and 1023 on a 10-bit ADC." },
+            { id: "digitalwrite", keywords: ["digitalwrite"], reply: "digitalWrite() sets a digital pin HIGH or LOW to drive an output like an LED or relay." },
+            { id: "pinmode", keywords: ["pinmode"], reply: "pinMode() configures a pin as INPUT, OUTPUT, or INPUT_PULLUP before you use it." },
+            { id: "loop-fn", keywords: ["loop function", "void loop"], reply: "The loop() function runs continuously and repeatedly after setup() finishes, forming the main body of an Arduino program." },
+            { id: "setup-fn", keywords: ["setup function", "void setup"], reply: "setup() runs only once when the board starts or resets, used for pin modes and initialization." },
+            { id: "variable", keywords: ["variable"], reply: "A variable stores a data value in memory that your program can read and change, like a sensor reading or a counter." },
+            { id: "array", keywords: ["array"], reply: "An array stores multiple values of the same data type together, accessible by index — handy for sensor readings or LED sequences." },
+            { id: "function", keywords: [" function ", "custom function"], reply: "Functions organize code into reusable, named blocks, making your program cleaner and easier to maintain." },
+            { id: "if-statement", keywords: ["if statement"], reply: "An if statement executes a block of code only when its condition evaluates to true." },
+            { id: "for-loop", keywords: ["for loop"], reply: "A for loop repeats a block of code a fixed number of times, ideal for iterating through arrays or repeating an action." },
+            { id: "while-loop", keywords: ["while loop"], reply: "A while loop repeats a block of code as long as its condition remains true." },
+            { id: "switch-case", keywords: ["switch case"], reply: "A switch-case statement selects and runs one block of code out of several possible options based on a variable's value." },
+            { id: "boolean", keywords: ["boolean"], reply: "A boolean variable stores one of two values: true or false, often used for flags and conditions." },
+            { id: "int-type", keywords: ["int "], reply: "An int variable stores whole numbers (no decimals), typically in the range -32,768 to 32,767 on 16-bit platforms." },
+            { id: "float-type", keywords: ["float"], reply: "A float variable stores decimal (fractional) numbers, useful for sensor calculations that need precision." },
+            { id: "string-type", keywords: ["string"], reply: "A String stores text data — sequences of characters — used for messages, labels, and formatted output." },
+            { id: "library", keywords: ["library"], reply: "A library is a pre-written collection of code that adds functionality — like controlling a sensor or display — without writing it from scratch." },
+
+            // ---------- WIRELESS / COMM ----------
+            { id: "wifi", keywords: ["wifi", "wi-fi"], reply: "ESP32 and ESP8266 include built-in Wi-Fi, making them ideal choices for IoT applications that need internet connectivity." },
+            { id: "bluetooth", keywords: ["bluetooth"], reply: "ESP32 supports both Bluetooth Classic and Bluetooth Low Energy (BLE) for wireless communication with phones and other devices." },
+            { id: "ble", keywords: ["ble"], reply: "Bluetooth Low Energy (BLE) is designed for low-power, short-range wireless communication, commonly used in wearables and IoT sensors." },
+            { id: "gpio", keywords: ["gpio"], reply: "GPIO stands for General Purpose Input/Output — pins used for connecting sensors, LEDs, buttons, and other peripherals." },
+            { id: "adc", keywords: ["adc"], reply: "An ADC (Analog-to-Digital Converter) converts a continuous analog voltage into a discrete digital value the microcontroller can process." },
+            { id: "dac", keywords: ["dac"], reply: "A DAC (Digital-to-Analog Converter) converts a digital value into a continuous analog voltage output." },
+            { id: "deep-sleep", keywords: ["deep sleep"], reply: "Deep Sleep mode dramatically reduces power consumption by shutting down most peripherals, useful for battery-powered ESP32 IoT projects." },
+            { id: "i2c", keywords: ["i2c"], reply: "I2C is a two-wire communication protocol (SDA and SCL) that lets multiple devices communicate over a shared bus using unique addresses." },
+            { id: "spi", keywords: ["spi"], reply: "SPI is a fast, full-duplex communication protocol using MOSI, MISO, SCK, and CS lines, often used for displays and SD cards." },
+            { id: "uart", keywords: ["uart"], reply: "UART enables asynchronous serial communication between two devices using TX and RX lines." },
+            { id: "serial-comm", keywords: ["serial communication"], reply: "Serial communication transfers data one bit at a time over a single wire (or pair), commonly used between a microcontroller and a computer." },
+            { id: "baud-rate", keywords: ["baud rate"], reply: "Baud rate defines the speed of serial communication in bits per second, such as 9600 or 115200 bps — both sides must match." },
+            { id: "modbus", keywords: ["modbus"], reply: "Modbus is an industrial communication protocol widely used to connect PLCs, sensors, and automation equipment." },
+            { id: "canbus", keywords: ["can bus"], reply: "CAN Bus is a robust, noise-resistant protocol commonly used in automobiles for communication between ECUs." },
+            { id: "rs232", keywords: ["rs232"], reply: "RS232 is a classic serial communication standard used for point-to-point connections between two devices over short distances." },
+            { id: "rs485", keywords: ["rs485"], reply: "RS485 supports multi-device serial communication over long distances and is common in industrial automation networks." },
+            { id: "zigbee", keywords: ["zigbee"], reply: "Zigbee is a low-power wireless mesh protocol used in home automation and sensor networks." },
+            { id: "lora", keywords: ["lora"], reply: "LoRa is a long-range, low-power wireless technology used for IoT applications that need kilometers of range with minimal power use." },
+            { id: "nfc", keywords: ["nfc"], reply: "NFC (Near Field Communication) enables short-range wireless data exchange, commonly used for contactless payments and tags." },
+            { id: "rfid-general", keywords: ["rfid"], reply: "RFID uses radio waves to identify and track tags attached to objects, common in access control and inventory systems." },
+            { id: "mqtt", keywords: ["mqtt"], reply: "MQTT is a lightweight publish/subscribe messaging protocol widely used for IoT communication between devices and cloud servers." },
+            { id: "iot", keywords: [" iot ", "internet of things"], reply: "IoT (Internet of Things) refers to connecting physical devices to the internet so they can collect data and be monitored or controlled remotely." },
+
+            // ---------- SENSORS ----------
+            { id: "pir", keywords: ["pir sensor"], reply: "A PIR sensor detects human or animal motion by sensing changes in infrared radiation, commonly used in motion-activated lights and security systems." },
+            { id: "ir-sensor", keywords: ["ir sensor"], reply: "An IR sensor detects objects or measures distance using infrared light emission and reflection." },
+            { id: "ldr", keywords: ["ldr"], reply: "An LDR (Light Dependent Resistor) changes its resistance based on the intensity of light falling on it, used in light-sensing circuits." },
+            { id: "dht11", keywords: ["dht11"], reply: "The DHT11 is a low-cost sensor that measures temperature and humidity with basic accuracy." },
+            { id: "dht22", keywords: ["dht22"], reply: "The DHT22 measures temperature and humidity with higher accuracy and range than the DHT11." },
+            { id: "bmp280", keywords: ["bmp280"], reply: "The BMP280 measures atmospheric pressure and temperature, often used for altitude estimation." },
+            { id: "mq2", keywords: ["mq2", "mq-2"], reply: "The MQ2 gas sensor detects smoke and combustible gases like LPG, propane, and methane." },
+            { id: "mq135", keywords: ["mq135", "mq-135"], reply: "The MQ135 sensor monitors air quality, detecting gases like ammonia, benzene, and CO2." },
+            { id: "soil-moisture", keywords: ["soil moisture"], reply: "A soil moisture sensor measures the water content in soil, commonly used in automated plant watering systems." },
+            { id: "rain-sensor", keywords: ["rain sensor"], reply: "A rain sensor detects water droplets on its surface, useful for weather stations and automated systems." },
+            { id: "flame-sensor", keywords: ["flame sensor"], reply: "A flame sensor detects the infrared light emitted by fire, used in fire-detection and safety projects." },
+            { id: "gas-sensor", keywords: ["gas sensor"], reply: "Gas sensors detect the presence of specific gases such as LPG, methane, or smoke in the air." },
+            { id: "temp-sensor", keywords: ["temperature sensor"], reply: "Temperature sensors (like the DS18B20 or LM35) measure ambient or object temperature and output an analog or digital signal." },
+            { id: "humidity-sensor", keywords: ["humidity sensor"], reply: "Humidity sensors measure the moisture content present in the surrounding air." },
+            { id: "accelerometer", keywords: ["accelerometer"], reply: "An accelerometer measures acceleration forces along the X, Y, and Z axes, useful for detecting motion, tilt, and orientation." },
+            { id: "gyroscope", keywords: ["gyroscope"], reply: "A gyroscope measures angular velocity (rotational movement), often paired with an accelerometer for orientation tracking." },
+            { id: "mpu6050", keywords: ["mpu6050"], reply: "The MPU6050 combines a 3-axis accelerometer and a 3-axis gyroscope in one module, popular in balancing robots and drones." },
+            { id: "ultrasonic-general", keywords: ["ultrasonic sensor"], reply: "An ultrasonic sensor (like the HC-SR04) measures distance by timing how long a sound pulse takes to bounce back off an object." },
+            { id: "proximity-sensor", keywords: ["proximity sensor"], reply: "A proximity sensor detects the presence of nearby objects without physical contact, using infrared, capacitive, or inductive sensing." },
+            { id: "load-cell", keywords: ["load cell"], reply: "A load cell converts a physical force (like weight) into an electrical signal, typically read via an HX711 amplifier module." },
+            { id: "ph-sensor", keywords: ["ph sensor"], reply: "A pH sensor measures the acidity or alkalinity of a liquid, often used in water quality and hydroponics projects." },
+            { id: "current-sensor", keywords: ["current sensor"], reply: "A current sensor (like the ACS712) measures the amount of current flowing through a circuit, useful for power monitoring." },
+            { id: "voltage-sensor", keywords: ["voltage sensor"], reply: "A voltage sensor module scales down a higher voltage so a microcontroller's ADC can safely measure it." },
+            { id: "color-sensor", keywords: ["color sensor"], reply: "A color sensor (like the TCS3200) detects the color of an object by measuring reflected red, green, and blue light intensity." },
+            { id: "touch-sensor", keywords: ["touch sensor"], reply: "A touch sensor detects physical or capacitive touch and outputs a digital signal, used as a button alternative." },
+            { id: "hall-sensor", keywords: ["hall effect", "hall sensor"], reply: "A Hall effect sensor detects the presence and strength of a magnetic field, used in speed sensing and proximity detection." },
+            { id: "gps", keywords: ["gps module", "gps sensor"], reply: "A GPS module receives satellite signals to determine precise location, altitude, and time data." },
+            { id: "rtc", keywords: ["rtc module", "real time clock"], reply: "An RTC (Real-Time Clock) module (like the DS3231) keeps accurate time even when the main board is powered off, using a backup battery." },
+            { id: "camera-module", keywords: ["camera module"], reply: "A camera module captures images or video and can be used with boards like the ESP32-CAM or Raspberry Pi Camera for vision projects." },
+            { id: "fingerprint", keywords: ["fingerprint sensor"], reply: "A fingerprint sensor captures and matches fingerprint patterns, commonly used for biometric access control." },
+
+            // ---------- ACTUATORS / MOTORS ----------
+            { id: "servo-general", keywords: ["servo"], reply: "Servo motors rotate to precise angles, typically between 0° and 180°, controlled using a PWM signal." },
+            { id: "stepper", keywords: ["stepper motor"], reply: "Stepper motors move in fixed, discrete steps for precise positioning without needing a feedback sensor." },
+            { id: "dc-motor", keywords: ["dc motor"], reply: "DC motors rotate continuously when supplied with DC voltage, with speed controllable via PWM." },
+            { id: "motor-driver", keywords: ["motor driver"], reply: "A motor driver acts as an interface between a microcontroller and a motor, providing the current and voltage the motor needs safely." },
+            { id: "l298n", keywords: ["l298n"], reply: "The L298N is a dual H-Bridge motor driver module commonly used to control the speed and direction of two DC motors." },
+            { id: "bts7960", keywords: ["bts7960"], reply: "The BTS7960 is a high-current motor driver module suited for larger DC motors that need more power than the L298N can supply." },
+            { id: "buzzer", keywords: ["buzzer"], reply: "A buzzer produces sound when powered, used for alerts, alarms, and simple audio feedback in projects." },
+            { id: "relay-general", keywords: ["relay"], reply: "A relay is an electrically operated switch that allows a low-voltage circuit to safely control a high-voltage or high-current load." },
+            { id: "solenoid", keywords: ["solenoid"], reply: "A solenoid converts electrical energy into linear mechanical motion, often used for locks and valves." },
+
+            // ---------- DISPLAYS ----------
+            { id: "lcd", keywords: ["lcd", "16x2"], reply: "A 16x2 LCD displays text and numbers across two rows of 16 characters, commonly interfaced via I2C for fewer wiring pins." },
+            { id: "tft", keywords: ["tft"], reply: "TFT displays show full-color graphics and are used when a project needs richer visual output than a simple character LCD." },
+            { id: "seven-segment", keywords: ["seven segment"], reply: "Seven-segment displays show numbers from 0 to 9 (and some letters) using seven individually controllable LED segments." },
+            { id: "led-matrix", keywords: ["led matrix"], reply: "An LED matrix arranges LEDs in rows and columns to display text, patterns, or simple animations." },
+
+            // ---------- PCB / TOOLS ----------
+            { id: "pcb", keywords: ["pcb", "printed circuit board"], reply: "A Printed Circuit Board (PCB) permanently connects electronic components using etched copper tracks on an insulating board." },
+            { id: "kicad", keywords: ["kicad"], reply: "KiCad is a free, open-source PCB design software used to create schematics and circuit board layouts." },
+            { id: "easyeda", keywords: ["easyeda"], reply: "EasyEDA is a free, browser-based PCB design and simulation platform, often paired with JLCPCB for manufacturing." },
+            { id: "gerber", keywords: ["gerber"], reply: "Gerber files are the standard format PCB manufacturers use to fabricate a board from your design." },
+            { id: "altium", keywords: ["altium"], reply: "Altium Designer is a professional PCB design tool used widely in industry for complex, multi-layer board layouts." },
+            { id: "smd", keywords: ["smd", "through hole"], reply: "SMD (Surface Mount Device) components solder directly onto the PCB surface, while through-hole components have leads inserted through drilled holes — SMD is smaller, through-hole is easier to hand-solder." },
+
+            // ---------- ROBOTICS / PROJECTS ----------
+            { id: "robot", keywords: ["robot"], reply: "A robot combines sensors, actuators, and a controller to sense its environment and perform automated tasks." },
+            { id: "line-follower", keywords: ["line follower"], reply: "A line follower robot uses IR sensors to detect a line's contrast against the floor and steer itself along the path." },
+            { id: "obstacle-avoidance", keywords: ["obstacle avoidance"], reply: "Obstacle avoidance robots typically use ultrasonic or IR sensors to detect nearby obstacles and steer around them." },
+            { id: "robot-arm", keywords: ["robot arm", "robotic arm"], reply: "Robot arms use multiple servo motors at their joints for precise, multi-axis movement to pick, place, or manipulate objects." },
+            { id: "embedded-systems", keywords: ["embedded systems"], reply: "Embedded Systems involve designing dedicated hardware and software combinations for specific tasks, like smart appliances, automobiles, and IoT devices." },
+            { id: "drone", keywords: ["drone", "quadcopter"], reply: "A drone (quadcopter) uses four motors and an ESC-driven flight controller with an IMU to achieve stable, controlled flight." },
+            { id: "home-automation", keywords: ["home automation", "smart home"], reply: "Home automation uses microcontrollers, relays, and sensors — often connected over Wi-Fi — to control lights, appliances, and security remotely." },
+
+            // ---------- IOT PLATFORMS ----------
+            { id: "blynk", keywords: ["blynk"], reply: "Blynk is a mobile app platform that lets you build a custom dashboard to control and monitor IoT hardware like ESP32 or Arduino." },
+            { id: "thingspeak", keywords: ["thingspeak"], reply: "ThingSpeak is a cloud platform for logging and visualizing sensor data from IoT devices over time." },
+            { id: "nodered", keywords: ["node-red", "node red"], reply: "Node-RED is a visual, flow-based programming tool for wiring together IoT devices, APIs, and online services." },
+            { id: "firebase", keywords: ["firebase"], reply: "Firebase provides a real-time cloud database and backend services often used to store and sync IoT sensor data." },
+
+            // ---------- CAREER ----------
+            { id: "career", keywords: ["electronics engineer"], reply: "Electronics engineers design circuits, embedded systems, communication devices, and automation solutions across many industries." },
+            { id: "interview", keywords: ["interview"], reply: "For electronics interviews, brush up on Ohm's Law, transistors, logic gates, Arduino/embedded basics, communication protocols, and embedded C." },
+            { id: "project-ideas", keywords: ["project ideas", "project idea"], reply: "Popular beginner-to-intermediate projects: Smart Home Automation, Weather Station, IoT Plant Monitoring, Line Follower Robot, Smart Parking System, and Home Security System." },
+            { id: "internship", keywords: ["internship"], reply: "Internships help you gain hands-on experience in electronics, embedded systems, IoT, PCB design, and automation before entering the industry." },
+        ];
+
+
+        /* ============================================================
+           MATCHING ENGINE
+        ============================================================ */
+        function normalize(text) {
+            return ' ' + text.toLowerCase().replace(/[?.!,]/g, ' ').replace(/\s+/g, ' ').trim() + ' ';
+        }
+
+        function personalize(text) {
+            const tag = userName ? ` ${userName}` : '';
+            return text.replace(/\{name\}/g, tag);
+        }
+
+        function getBotResponse(rawInput) {
+            const normalized = normalize(rawInput);
+            let best = null;
+            let bestScore = -1;
+
+            for (const entry of KB) {
+                for (const kw of entry.keywords) {
+                    const kwNorm = kw.trim().toLowerCase();
+                    if (normalized.includes(kwNorm)) {
+                        if (kwNorm.length > bestScore) {
+                            bestScore = kwNorm.length;
+                            best = entry;
+                        }
+                    }
+                }
+            }
+
+            if (best) {
+                return { text: personalize(best.reply), connections: best.connections, code: best.code, codeExplanation: best.codeExplanation };
+            }
+
+            const fallback = [
+                "I'm not picking up that signal. Could you specify the component, protocol, or circuit concept you need help with?",
+                "That one's outside my current knowledge base — try asking about a specific component, sensor, or microcontroller.",
+                "I couldn't match that to anything in my circuit library. Try a keyword like \"i2c\", \"esp32\", or \"blink led\"."
+            ];
+            return { text: personalize(fallback[Math.floor(Math.random() * fallback.length)]) };
+        }
+    </script>
+</body>
+</html>
