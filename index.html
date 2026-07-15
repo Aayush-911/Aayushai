@@ -1,6 +1,3 @@
-
-
-Aayushtronics · HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,9 +18,9 @@ Aayushtronics · HTML
             --border: #2a2b2d;
             --accent: #3b6fe0;
         }
- 
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
- 
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg);
@@ -33,7 +30,7 @@ Aayushtronics · HTML
             overflow: hidden;
             display: flex;
         }
- 
+
         /* ---------------- SIDEBAR ---------------- */
         #sidebar {
             width: 268px;
@@ -45,18 +42,18 @@ Aayushtronics · HTML
             height: 100%;
             transition: margin-left 0.25s ease;
         }
- 
+
         #sidebar.collapsed {
             margin-left: -268px;
         }
- 
+
         #sidebar-header {
             padding: 18px 16px 10px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
- 
+
         .sidebar-logo {
             font-weight: 800;
             font-size: 1.05em;
@@ -64,11 +61,11 @@ Aayushtronics · HTML
             color: #ffffff;
             white-space: nowrap;
         }
- 
+
         .sidebar-logo .dot {
             color: var(--accent);
         }
- 
+
         #new-chat-btn {
             margin: 8px 12px 14px 12px;
             display: flex;
@@ -84,9 +81,9 @@ Aayushtronics · HTML
             cursor: pointer;
             transition: background 0.2s;
         }
- 
+
         #new-chat-btn:hover { background: var(--surface-hover); }
- 
+
         #history-label {
             padding: 8px 20px 4px 20px;
             font-size: 0.72rem;
@@ -94,7 +91,7 @@ Aayushtronics · HTML
             letter-spacing: 0.06em;
             color: #8a8d90;
         }
- 
+
         #history-list {
             flex: 1;
             overflow-y: auto;
@@ -103,7 +100,7 @@ Aayushtronics · HTML
             flex-direction: column;
             gap: 2px;
         }
- 
+
         .history-item {
             padding: 10px 12px;
             border-radius: 10px;
@@ -118,10 +115,10 @@ Aayushtronics · HTML
             justify-content: space-between;
             gap: 6px;
         }
- 
+
         .history-item:hover { background: var(--surface); }
         .history-item.active { background: var(--surface-hover); color: var(--text-primary); }
- 
+
         .history-item .del-btn {
             opacity: 0;
             font-size: 0.75rem;
@@ -133,7 +130,7 @@ Aayushtronics · HTML
         }
         .history-item:hover .del-btn { opacity: 1; }
         .history-item .del-btn:hover { color: #ff6b6b; }
- 
+
         /* User box bottom-left */
         #user-box {
             border-top: 1px solid var(--border);
@@ -144,9 +141,9 @@ Aayushtronics · HTML
             cursor: pointer;
             position: relative;
         }
- 
+
         #user-box:hover { background: var(--surface); }
- 
+
         #user-avatar {
             width: 30px;
             height: 30px;
@@ -160,7 +157,7 @@ Aayushtronics · HTML
             font-size: 0.85rem;
             flex-shrink: 0;
         }
- 
+
         #user-name-label {
             font-size: 0.85rem;
             color: var(--text-primary);
@@ -168,12 +165,12 @@ Aayushtronics · HTML
             text-overflow: ellipsis;
             white-space: nowrap;
         }
- 
+
         #user-sub-label {
             font-size: 0.72rem;
             color: #8a8d90;
         }
- 
+
         /* ---------------- MAIN CHAT ---------------- */
         #chat-container {
             flex: 1;
@@ -183,7 +180,7 @@ Aayushtronics · HTML
             position: relative;
             min-width: 0;
         }
- 
+
         #chat-header {
             padding: 18px 24px;
             font-size: 1.3em;
@@ -198,7 +195,7 @@ Aayushtronics · HTML
             gap: 12px;
             border-bottom: 1px solid transparent;
         }
- 
+
         #sidebar-toggle-btn {
             background: transparent;
             border: none;
@@ -214,7 +211,7 @@ Aayushtronics · HTML
             flex-shrink: 0;
         }
         #sidebar-toggle-btn:hover { background: var(--surface); color: var(--text-primary); }
- 
+
         #sidebar-backdrop {
             display: none;
             position: fixed;
@@ -225,13 +222,13 @@ Aayushtronics · HTML
             pointer-events: none;
             transition: opacity 0.25s ease;
         }
- 
+
         .header-logo {
             color: #ffffff;
             font-weight: 800;
         }
         .header-logo .dot { color: var(--accent); }
- 
+
         #chat-window {
             flex: 1;
             padding: 24px 24px 120px 24px;
@@ -246,7 +243,7 @@ Aayushtronics · HTML
             opacity: 1;
             transition: opacity 0.4s ease 0.12s;
         }
- 
+
         /* ---------------- HERO (centered landing) MODE ---------------- */
         /* When a chat has no messages yet, the search bar sits centered on
            screen (like a landing page). The moment the first message is
@@ -256,16 +253,16 @@ Aayushtronics · HTML
         #chat-container.mode-hero #chat-header {
             border-bottom-color: transparent;
         }
- 
+
         #chat-container.mode-chat #chat-header {
             border-bottom-color: var(--border);
         }
- 
+
         #chat-container.mode-hero #chat-window {
             opacity: 0;
             pointer-events: none;
         }
- 
+
         #hero-title-wrap {
             position: absolute;
             top: 50%;
@@ -277,12 +274,12 @@ Aayushtronics · HTML
             pointer-events: none;
             transition: opacity 0.3s ease;
         }
- 
+
         #chat-container.mode-hero #hero-title-wrap {
             opacity: 1;
             pointer-events: auto;
         }
- 
+
         #hero-badge {
             width: 52px;
             height: 52px;
@@ -294,30 +291,30 @@ Aayushtronics · HTML
             justify-content: center;
             box-shadow: 0 6px 24px rgba(59, 111, 224, 0.25);
         }
- 
+
         #hero-badge svg { width: 30px; height: 30px; }
- 
+
         #hero-title {
             font-size: 1.7em;
             font-weight: 800;
             letter-spacing: -0.5px;
             margin-bottom: 8px;
         }
- 
+
         #hero-subtitle {
             color: var(--text-secondary);
             font-size: 0.95rem;
             line-height: 1.5;
             margin-bottom: 22px;
         }
- 
+
         #hero-chips {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 8px;
         }
- 
+
         .hero-chip {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -329,27 +326,27 @@ Aayushtronics · HTML
             cursor: pointer;
             transition: background 0.2s, color 0.2s, border-color 0.2s;
         }
- 
+
         .hero-chip:hover {
             background: var(--surface-hover);
             color: var(--text-primary);
             border-color: #3d3f42;
         }
- 
+
         .message-wrapper {
             display: flex;
             width: 100%;
             animation: fadeIn 0.4s ease-out forwards;
             opacity: 0;
         }
- 
+
         @keyframes fadeIn {
             to { opacity: 1; transform: translateY(0); }
             from { opacity: 0; transform: translateY(10px); }
         }
- 
+
         .user-wrapper { justify-content: flex-end; }
- 
+
         .user-msg {
             background: var(--user-bubble);
             color: var(--text-primary);
@@ -359,9 +356,9 @@ Aayushtronics · HTML
             font-size: 1rem;
             line-height: 1.5;
         }
- 
+
         .bot-wrapper { justify-content: flex-start; gap: 16px; }
- 
+
         .bot-icon {
             width: 32px;
             height: 32px;
@@ -372,9 +369,9 @@ Aayushtronics · HTML
             justify-content: center;
             background: #fff;
         }
- 
+
         .bot-icon svg { width: 20px; height: 20px; }
- 
+
         .bot-msg {
             color: var(--text-primary);
             max-width: 85%;
@@ -383,7 +380,7 @@ Aayushtronics · HTML
             padding-top: 4px;
             white-space: pre-line;
         }
- 
+
         .typing-dots span {
             display: inline-block;
             width: 6px;
@@ -396,7 +393,7 @@ Aayushtronics · HTML
         .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
         .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
         @keyframes blink { 0%, 80%, 100% { opacity: 0.2; } 40% { opacity: 1; } }
- 
+
         #input-area-wrapper {
             position: absolute;
             bottom: 0;
@@ -407,7 +404,7 @@ Aayushtronics · HTML
             background: linear-gradient(transparent, var(--bg) 40%);
             will-change: transform;
         }
- 
+
         /* Centered "landing" position — only the static baseline; the actual
            glide-down animation is driven by JS (FLIP technique) so it works
            smoothly no matter the viewport size. */
@@ -420,12 +417,12 @@ Aayushtronics · HTML
             padding: 0;
             background: none;
         }
- 
+
         #input-area-inner {
             max-width: 900px;
             margin: 0 auto;
         }
- 
+
         #input-area {
             display: flex;
             align-items: center;
@@ -436,9 +433,9 @@ Aayushtronics · HTML
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             transition: background 0.3s ease;
         }
- 
+
         #input-area:focus-within { background: var(--surface-hover); }
- 
+
         #user-input {
             flex: 1;
             background: transparent;
@@ -448,9 +445,9 @@ Aayushtronics · HTML
             font-family: 'Inter', sans-serif;
             font-size: 1rem;
         }
- 
+
         #user-input::placeholder { color: var(--text-secondary); }
- 
+
         #send-btn {
             background: transparent;
             color: var(--text-secondary);
@@ -466,27 +463,27 @@ Aayushtronics · HTML
             border-radius: 50%;
             transition: color 0.2s, background 0.2s;
         }
- 
+
         #send-btn:hover { background: rgba(255, 255, 255, 0.08); color: var(--text-primary); }
         #send-btn:disabled { opacity: 0.35; cursor: default; }
         #send-btn:disabled:hover { background: transparent; color: var(--text-secondary); }
         #send-btn.ready { color: var(--accent); }
- 
+
         #input-hint {
             text-align: center;
             font-size: 0.72rem;
             color: #6d7073;
             margin-top: 10px;
         }
- 
+
         #chat-container.mode-hero #input-hint { display: none; }
- 
+
         #chat-window::-webkit-scrollbar { width: 8px; }
         #chat-window::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
         #chat-window::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
         #history-list::-webkit-scrollbar { width: 6px; }
         #history-list::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.12); border-radius: 10px; }
- 
+
         /* ---------------- LOGIN MODAL ---------------- */
         #login-overlay {
             position: fixed;
@@ -498,7 +495,7 @@ Aayushtronics · HTML
             justify-content: center;
             z-index: 100;
         }
- 
+
         #login-card {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -509,7 +506,7 @@ Aayushtronics · HTML
             text-align: center;
             animation: fadeIn 0.35s ease-out forwards;
         }
- 
+
         #login-logo {
             font-weight: 800;
             font-size: 1.4em;
@@ -517,13 +514,13 @@ Aayushtronics · HTML
             margin-bottom: 6px;
         }
         #login-logo .dot { color: var(--accent); }
- 
+
         #login-card p {
             color: var(--text-secondary);
             font-size: 0.9rem;
             margin-bottom: 22px;
         }
- 
+
         #login-input {
             width: 100%;
             background: var(--bg);
@@ -537,7 +534,7 @@ Aayushtronics · HTML
             margin-bottom: 16px;
         }
         #login-input:focus { border-color: var(--accent); }
- 
+
         #login-submit {
             width: 100%;
             background: var(--accent);
@@ -552,7 +549,7 @@ Aayushtronics · HTML
             transition: opacity 0.2s;
         }
         #login-submit:hover { opacity: 0.88; }
- 
+
         /* ---------------- PHONE LAYOUT ---------------- */
         @media (max-width: 760px) {
             #sidebar {
@@ -572,24 +569,24 @@ Aayushtronics · HTML
                 opacity: 1;
                 pointer-events: auto;
             }
- 
+
             #chat-header {
                 padding: 14px 14px 14px calc(14px + env(safe-area-inset-left));
                 font-size: 1.1em;
                 gap: 8px;
             }
- 
+
             #chat-window {
                 padding: 16px 14px 130px 14px;
                 gap: 22px;
             }
- 
+
             .user-msg, .bot-msg { max-width: 90%; }
             .user-msg { padding: 10px 16px; font-size: 0.96rem; }
             .bot-msg { font-size: 0.96rem; }
             .bot-icon { width: 28px; height: 28px; min-width: 28px; }
             .bot-icon svg { width: 17px; height: 17px; }
- 
+
             #input-area-wrapper {
                 padding: 0 14px calc(14px + env(safe-area-inset-bottom)) 14px;
             }
@@ -602,7 +599,7 @@ Aayushtronics · HTML
                 margin-top: 8px;
                 padding: 0 6px;
             }
- 
+
             #hero-title-wrap { width: 90%; transform: translate(-50%, calc(-100% - 56px)); }
             #hero-badge { width: 44px; height: 44px; margin-bottom: 14px; }
             #hero-badge svg { width: 26px; height: 26px; }
@@ -610,10 +607,10 @@ Aayushtronics · HTML
             #hero-subtitle { font-size: 0.88rem; margin-bottom: 18px; }
             #chat-container.mode-hero #input-area-wrapper { width: 90%; }
             .hero-chip { font-size: 0.78rem; padding: 7px 12px; }
- 
+
             #login-card { padding: 28px 22px; }
         }
- 
+
         /* Extra-small phones */
         @media (max-width: 400px) {
             #chat-header { font-size: 1.02em; padding-left: calc(12px + env(safe-area-inset-left)); }
@@ -626,7 +623,7 @@ Aayushtronics · HTML
             #input-area-wrapper { padding-left: 10px; padding-right: 10px; }
             #input-hint { display: none; }
         }
- 
+
         /* Short / landscape phone screens — keep the hero from overflowing */
         @media (max-height: 480px) and (max-width: 900px) {
             #hero-badge { display: none; }
@@ -638,7 +635,7 @@ Aayushtronics · HTML
     </style>
 </head>
 <body>
- 
+
     <!-- LOGIN / WELCOME MODAL -->
     <div id="login-overlay">
         <div id="login-card">
@@ -648,7 +645,7 @@ Aayushtronics · HTML
             <button id="login-submit" onclick="submitLogin()">Continue</button>
         </div>
     </div>
- 
+
     <!-- SIDEBAR -->
     <div id="sidebar">
         <div id="sidebar-header">
@@ -668,9 +665,9 @@ Aayushtronics · HTML
             </div>
         </div>
     </div>
- 
+
     <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
- 
+
     <!-- MAIN CHAT -->
     <div id="chat-container">
         <div id="chat-header">
@@ -679,7 +676,7 @@ Aayushtronics · HTML
             </button>
             <span class="header-logo">Aayushtronics<span class="dot">.</span></span>
         </div>
- 
+
         <div id="hero-title-wrap">
             <div id="hero-badge">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.6601 23C11.5204 16.9247 6.64333 12.0476 0.567993 11.9079V11.0921C6.64333 10.9524 11.5204 6.0753 11.6601 0H12.4759C12.6156 6.0753 17.4927 10.9524 23.568 11.0921V11.9079C17.4927 12.0476 12.6156 16.9247 12.4759 23H11.6601Z" fill="#131314"/></svg>
@@ -695,9 +692,9 @@ Aayushtronics · HTML
                 <button class="hero-chip" onclick="sendMessage('What is PWM?')">PWM</button>
             </div>
         </div>
- 
+
         <div id="chat-window"></div>
- 
+
         <div id="input-area-wrapper">
             <div id="input-area-inner">
                 <div id="input-area">
@@ -710,7 +707,7 @@ Aayushtronics · HTML
             </div>
         </div>
     </div>
- 
+
     <script>
         /* ============================================================
            STATE
@@ -720,13 +717,13 @@ Aayushtronics · HTML
             CHATS: 'aayushtronics_chats',
             ACTIVE: 'aayushtronics_active_chat'
         };
- 
+
         let userName = localStorage.getItem(STORAGE_KEYS.NAME) || '';
         let chats = JSON.parse(localStorage.getItem(STORAGE_KEYS.CHATS) || '[]');
         let activeChatId = localStorage.getItem(STORAGE_KEYS.ACTIVE) || null;
- 
+
         const BOT_ICON_SVG = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.6601 23C11.5204 16.9247 6.64333 12.0476 0.567993 11.9079V11.0921C6.64333 10.9524 11.5204 6.0753 11.6601 0H12.4759C12.6156 6.0753 17.4927 10.9524 23.568 11.0921V11.9079C17.4927 12.0476 12.6156 16.9247 12.4759 23H11.6601Z" fill="#131314"/></svg>`;
- 
+
         /* ============================================================
            INIT
         ============================================================ */
@@ -734,7 +731,7 @@ Aayushtronics · HTML
             if (isMobileViewport()) {
                 document.getElementById('sidebar').classList.add('collapsed');
             }
- 
+
             if (userName) {
                 document.getElementById('login-overlay').style.display = 'none';
                 applyUserToSidebar();
@@ -742,14 +739,14 @@ Aayushtronics · HTML
                 document.getElementById('login-overlay').style.display = 'flex';
                 document.getElementById('login-input').focus();
             }
- 
+
             document.getElementById('login-input').addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') submitLogin();
             });
- 
+
             updateHeroGreeting();
             renderHistoryList();
- 
+
             if (activeChatId && chats.find(c => c.id === activeChatId)) {
                 loadChat(activeChatId, true);
             } else if (chats.length > 0) {
@@ -757,10 +754,10 @@ Aayushtronics · HTML
             } else {
                 startNewChat();
             }
- 
+
             document.getElementById('user-input').focus();
         };
- 
+
         function submitLogin() {
             const val = document.getElementById('login-input').value.trim();
             if (val === '') return;
@@ -771,7 +768,7 @@ Aayushtronics · HTML
             updateHeroGreeting();
             document.getElementById('user-input').focus();
         }
- 
+
         function updateHeroGreeting() {
             const subtitle = document.getElementById('hero-subtitle');
             if (!subtitle) return;
@@ -779,13 +776,13 @@ Aayushtronics · HTML
                 ? `Hey ${userName}! Ask about microcontrollers, sensors, protocols, or circuit basics — I'll answer right here.`
                 : 'Your electronics & embedded-systems assistant. Ask about microcontrollers, sensors, protocols, or circuit basics.';
         }
- 
+
         function applyUserToSidebar() {
             document.getElementById('user-avatar').textContent = userName.charAt(0).toUpperCase();
             document.getElementById('user-name-label').textContent = userName;
             document.getElementById('user-sub-label').textContent = 'Tap to change name';
         }
- 
+
         function promptRename() {
             const val = prompt('Update your name:', userName || '');
             if (val && val.trim() !== '') {
@@ -794,11 +791,11 @@ Aayushtronics · HTML
                 applyUserToSidebar();
             }
         }
- 
+
         function isMobileViewport() {
             return window.innerWidth <= 760;
         }
- 
+
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const backdrop = document.getElementById('sidebar-backdrop');
@@ -806,13 +803,13 @@ Aayushtronics · HTML
             const isOpen = !sidebar.classList.contains('collapsed');
             backdrop.classList.toggle('visible', isOpen && isMobileViewport());
         }
- 
+
         function closeSidebarOnMobile() {
             if (!isMobileViewport()) return;
             document.getElementById('sidebar').classList.add('collapsed');
             document.getElementById('sidebar-backdrop').classList.remove('visible');
         }
- 
+
         /* ============================================================
            CHAT / HISTORY MANAGEMENT
         ============================================================ */
@@ -820,11 +817,11 @@ Aayushtronics · HTML
             localStorage.setItem(STORAGE_KEYS.CHATS, JSON.stringify(chats));
             localStorage.setItem(STORAGE_KEYS.ACTIVE, activeChatId);
         }
- 
+
         function getActiveChat() {
             return chats.find(c => c.id === activeChatId) || null;
         }
- 
+
         function startNewChat() {
             const id = 'chat_' + Date.now();
             const chat = { id: id, title: 'New chat', messages: [] };
@@ -839,7 +836,7 @@ Aayushtronics · HTML
             const inputField = document.getElementById('user-input');
             if (inputField) { inputField.value = ''; inputField.focus(); }
         }
- 
+
         function loadChat(id, isInitialLoad) {
             activeChatId = id;
             saveChats();
@@ -854,7 +851,7 @@ Aayushtronics · HTML
                 if (inputField) inputField.focus();
             }
         }
- 
+
         function deleteChat(id, evt) {
             evt.stopPropagation();
             chats = chats.filter(c => c.id !== id);
@@ -869,11 +866,11 @@ Aayushtronics · HTML
             saveChats();
             renderHistoryList();
         }
- 
+
         /* ============================================================
            HERO / CHAT MODE (centered search bar <-> docked search bar)
         ============================================================ */
- 
+
         // Instantly set the layout mode with no animation — used on page
         // load and when switching between existing chat sessions.
         function setModeInstant(hero) {
@@ -887,7 +884,7 @@ Aayushtronics · HTML
             wrapper.offsetHeight; // force reflow so the "none" transition takes effect first
             wrapper.style.transition = '';
         }
- 
+
         // Animate the search bar sliding from its centered hero position
         // down into the docked bottom position (ChatGPT-style), using the
         // FLIP technique so it works smoothly at any viewport size.
@@ -895,25 +892,25 @@ Aayushtronics · HTML
             const cc = document.getElementById('chat-container');
             const wrapper = document.getElementById('input-area-wrapper');
             if (!cc.classList.contains('mode-hero')) return;
- 
+
             const first = wrapper.getBoundingClientRect();
             cc.classList.remove('mode-hero');
             cc.classList.add('mode-chat');
             const last = wrapper.getBoundingClientRect();
- 
+
             const dx = first.left - last.left;
             const dy = first.top - last.top;
- 
+
             wrapper.style.transition = 'none';
             wrapper.style.transform = `translate(${dx}px, ${dy}px)`;
             // eslint-disable-next-line no-unused-expressions
             wrapper.offsetHeight; // force reflow before animating
- 
+
             requestAnimationFrame(() => {
                 wrapper.style.transition = 'transform 0.55s cubic-bezier(0.4, 0, 0.2, 1)';
                 wrapper.style.transform = 'translate(0, 0)';
             });
- 
+
             wrapper.addEventListener('transitionend', function cleanup(e) {
                 if (e.propertyName !== 'transform') return;
                 wrapper.style.transition = '';
@@ -921,7 +918,7 @@ Aayushtronics · HTML
                 wrapper.removeEventListener('transitionend', cleanup);
             });
         }
- 
+
         function renderHistoryList() {
             const list = document.getElementById('history-list');
             list.innerHTML = '';
@@ -929,30 +926,30 @@ Aayushtronics · HTML
                 const item = document.createElement('div');
                 item.className = 'history-item' + (chat.id === activeChatId ? ' active' : '');
                 item.onclick = () => loadChat(chat.id);
- 
+
                 const titleSpan = document.createElement('span');
                 titleSpan.style.overflow = 'hidden';
                 titleSpan.style.textOverflow = 'ellipsis';
                 titleSpan.style.whiteSpace = 'nowrap';
                 titleSpan.textContent = chat.title;
- 
+
                 const delBtn = document.createElement('button');
                 delBtn.className = 'del-btn';
                 delBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">close</span>';
                 delBtn.onclick = (e) => deleteChat(chat.id, e);
- 
+
                 item.appendChild(titleSpan);
                 item.appendChild(delBtn);
                 list.appendChild(item);
             });
         }
- 
+
         function renderChatWindow() {
             const chatWindow = document.getElementById('chat-window');
             chatWindow.innerHTML = '';
             const chat = getActiveChat();
             if (!chat) return;
- 
+
             chat.messages.forEach(msg => {
                 if (msg.role === 'user') {
                     renderUserBubble(msg.text);
@@ -962,7 +959,7 @@ Aayushtronics · HTML
             });
             scrollToBottom(chatWindow);
         }
- 
+
         function setChatTitleFromFirstMessage(text) {
             const chat = getActiveChat();
             if (chat && chat.title === 'New chat') {
@@ -971,29 +968,29 @@ Aayushtronics · HTML
                 renderHistoryList();
             }
         }
- 
+
         /* ============================================================
            UI HELPERS
         ============================================================ */
         function handleKeyPress(event) {
             if (event.key === 'Enter') sendMessage();
         }
- 
+
         function sendMessage(prefilledText) {
             const inputField = document.getElementById('user-input');
             const messageText = (typeof prefilledText === 'string' ? prefilledText : inputField.value).trim();
             if (messageText === '') return;
- 
+
             const cc = document.getElementById('chat-container');
             const wasHero = cc.classList.contains('mode-hero');
             if (wasHero) transitionToChatMode();
- 
+
             inputField.value = '';
             updateSendBtnState();
- 
+
             appendUserMessage(messageText);
             setChatTitleFromFirstMessage(messageText);
- 
+
             showTypingIndicator();
             setTimeout(() => {
                 removeTypingIndicator();
@@ -1001,7 +998,7 @@ Aayushtronics · HTML
                 appendBotMessage(botReply);
             }, 550 + Math.random() * 350 + (wasHero ? 200 : 0));
         }
- 
+
         function updateSendBtnState() {
             const inputField = document.getElementById('user-input');
             const sendBtn = document.getElementById('send-btn');
@@ -1010,7 +1007,7 @@ Aayushtronics · HTML
             sendBtn.disabled = !hasText;
             sendBtn.classList.toggle('ready', hasText);
         }
- 
+
         function appendUserMessage(text) {
             const chat = getActiveChat();
             if (chat) chat.messages.push({ role: 'user', text: text });
@@ -1018,7 +1015,7 @@ Aayushtronics · HTML
             renderUserBubble(text);
             scrollToBottom(document.getElementById('chat-window'));
         }
- 
+
         function appendBotMessage(text) {
             const chat = getActiveChat();
             if (chat) chat.messages.push({ role: 'bot', text: text });
@@ -1026,7 +1023,7 @@ Aayushtronics · HTML
             renderBotBubble(text);
             scrollToBottom(document.getElementById('chat-window'));
         }
- 
+
         function renderUserBubble(text) {
             const chatWindow = document.getElementById('chat-window');
             const wrapper = document.createElement('div');
@@ -1037,7 +1034,7 @@ Aayushtronics · HTML
             wrapper.appendChild(msgDiv);
             chatWindow.appendChild(wrapper);
         }
- 
+
         function renderBotBubble(text) {
             const chatWindow = document.getElementById('chat-window');
             const wrapper = document.createElement('div');
@@ -1052,7 +1049,7 @@ Aayushtronics · HTML
             wrapper.appendChild(msgDiv);
             chatWindow.appendChild(wrapper);
         }
- 
+
         let typingWrapperRef = null;
         function showTypingIndicator() {
             const chatWindow = document.getElementById('chat-window');
@@ -1071,20 +1068,20 @@ Aayushtronics · HTML
             typingWrapperRef = wrapper;
             scrollToBottom(chatWindow);
         }
- 
+
         function removeTypingIndicator() {
             if (typingWrapperRef) {
                 typingWrapperRef.remove();
                 typingWrapperRef = null;
             }
         }
- 
+
         function scrollToBottom(element) {
             setTimeout(() => {
                 element.scrollTo({ top: element.scrollHeight, behavior: 'smooth' });
             }, 10);
         }
- 
+
         /* ============================================================
            KNOWLEDGE BASE
            Each entry: { keywords: [...OR-matched keywords/phrases...], reply: "..." }
@@ -1101,7 +1098,7 @@ Aayushtronics · HTML
             { keywords: ["who are you", "your name"], reply: "I'm the Aayushtronics AI agent — a hardware and embedded-systems assistant built to answer your electronics questions." },
             { keywords: ["thank"], reply: "Anytime{name}! Ask away whenever you're stuck on a circuit." },
             { keywords: ["bye", "goodbye", "see you"], reply: "Powering down. Happy tinkering{name}!" },
- 
+
             // ---------- FUNDAMENTALS ----------
             { keywords: ["resistor"], reply: "A resistor limits current flow in a circuit and creates a voltage drop, measured in ohms (Ω). Resistance is calculated using Ohm's Law: V = I × R." },
             { keywords: ["capacitor"], reply: "A capacitor stores electrical energy in an electric field between two plates. It's used for filtering, decoupling, timing, and smoothing power supply ripple, measured in farads (F)." },
@@ -1131,7 +1128,7 @@ Aayushtronics · HTML
             { keywords: ["soldering iron", "soldering"], reply: "A soldering iron heats solder to join electronic components to a PCB or wires, forming a permanent electrical connection." },
             { keywords: ["fuse"], reply: "A fuse protects a circuit by breaking the connection if current exceeds a safe threshold, preventing damage from overcurrent." },
             { keywords: ["esd", "static electricity"], reply: "ESD (Electrostatic Discharge) is a sudden static electricity flow that can damage sensitive components — anti-static wrist straps and mats help prevent it." },
- 
+
             // ---------- POWER ----------
             { keywords: ["battery"], reply: "A battery provides DC power to electronic circuits. Common types include AA batteries, Li-ion cells (3.7V), and LiPo batteries used in robotics." },
             { keywords: ["power supply"], reply: "A power supply converts AC mains voltage into regulated DC voltage like 5V, 9V, or 12V for electronic circuits." },
@@ -1147,7 +1144,7 @@ Aayushtronics · HTML
             { keywords: ["tp4056", "charging module"], reply: "The TP4056 is a common Li-ion/LiPo battery charging module that manages safe constant-current/constant-voltage charging." },
             { keywords: ["solar panel"], reply: "A solar panel converts sunlight into DC electricity using photovoltaic cells, often paired with a charge controller for battery charging." },
             { keywords: ["ups"], reply: "A UPS (Uninterruptible Power Supply) provides backup battery power instantly during a mains power failure." },
- 
+
             // ---------- ICS / ANALOG ----------
             { keywords: ["op amp", "operational amplifier"], reply: "An Operational Amplifier (Op-Amp) amplifies the voltage difference between its two inputs and is widely used in analog signal processing." },
             { keywords: ["lm358"], reply: "LM358 is a dual operational amplifier IC commonly used in sensor signal-conditioning circuits." },
@@ -1167,7 +1164,7 @@ Aayushtronics · HTML
             { keywords: ["counter ic"], reply: "A counter IC increments or decrements its output state with each clock pulse, used for frequency division and event counting." },
             { keywords: ["shift register"], reply: "A shift register moves data bit-by-bit through a chain of flip-flops, often used to expand output pins (e.g. the 74HC595)." },
             { keywords: ["eeprom"], reply: "EEPROM is non-volatile memory that retains data even after power loss, and can be electrically erased and rewritten." },
- 
+
             // ---------- MICROCONTROLLERS / BOARDS ----------
             { keywords: ["arduino uno", "uno board", "uno r3", "atmega328p board"], reply: "Arduino Uno — the classic beginner board\n• MCU: ATmega328P (8-bit AVR), 16MHz clock\n• 14 digital I/O pins (6 give PWM output)\n• 6 analog inputs, 10-bit ADC\n• Memory: 32KB Flash, 2KB SRAM, 1KB EEPROM\n• Operating voltage: 5V, powered via USB or 7–12V barrel jack\n\nIt's simple, rock-solid, and has the largest tutorial/library ecosystem of any board — the natural starting point before moving to something like the ESP32 for wireless projects." },
             { keywords: ["arduino nano", "nano board"], reply: "Arduino Nano — Uno's compact cousin\n• Same ATmega328P chip and 16MHz clock as the Uno\n• 14 digital pins, 8 analog inputs (2 more than the Uno)\n• Breadboard-friendly: no barrel jack, powered via Mini/Micro-USB\n• Much smaller footprint, so it fits well inside enclosures or on protoboards\n\nChoose the Nano over the Uno when board size matters; choose the Uno when you want easier shield compatibility." },
@@ -1201,7 +1198,7 @@ Aayushtronics · HTML
             { keywords: ["bootloader"], reply: "A bootloader is small firmware that runs at startup, allowing new program code to be uploaded to a microcontroller (e.g. via USB)." },
             { keywords: ["firmware"], reply: "Firmware is the low-level software programmed directly onto a microcontroller or hardware device to control its behavior." },
             { keywords: ["rtos"], reply: "An RTOS (Real-Time Operating System) schedules multiple tasks with predictable timing, useful for complex embedded projects needing multitasking." },
- 
+
             // ---------- PROGRAMMING ----------
             { keywords: ["digital pin"], reply: "Digital pins can read HIGH/LOW input signals or output HIGH/LOW voltages, used for buttons, LEDs, and digital sensors." },
             { keywords: ["analog pin"], reply: "Analog pins read varying voltage levels using the microcontroller's built-in ADC, useful for sensors like potentiometers and LDRs." },
@@ -1224,7 +1221,7 @@ Aayushtronics · HTML
             { keywords: ["float"], reply: "A float variable stores decimal (fractional) numbers, useful for sensor calculations that need precision." },
             { keywords: ["string"], reply: "A String stores text data — sequences of characters — used for messages, labels, and formatted output." },
             { keywords: ["library"], reply: "A library is a pre-written collection of code that adds functionality — like controlling a sensor or display — without writing it from scratch." },
- 
+
             // ---------- WIRELESS / COMM ----------
             { keywords: ["wifi", "wi-fi"], reply: "ESP32 and ESP8266 include built-in Wi-Fi, making them ideal choices for IoT applications that need internet connectivity." },
             { keywords: ["bluetooth"], reply: "ESP32 supports both Bluetooth Classic and Bluetooth Low Energy (BLE) for wireless communication with phones and other devices." },
@@ -1248,7 +1245,7 @@ Aayushtronics · HTML
             { keywords: ["rfid"], reply: "RFID uses radio waves to identify and track tags attached to objects, common in access control and inventory systems." },
             { keywords: ["mqtt"], reply: "MQTT is a lightweight publish/subscribe messaging protocol widely used for IoT communication between devices and cloud servers." },
             { keywords: [" iot ", "internet of things"], reply: "IoT (Internet of Things) refers to connecting physical devices to the internet so they can collect data and be monitored or controlled remotely." },
- 
+
             // ---------- SENSORS ----------
             { keywords: ["pir sensor"], reply: "A PIR sensor detects human or animal motion by sensing changes in infrared radiation, commonly used in motion-activated lights and security systems." },
             { keywords: ["ir sensor"], reply: "An IR sensor detects objects or measures distance using infrared light emission and reflection." },
@@ -1280,7 +1277,7 @@ Aayushtronics · HTML
             { keywords: ["rtc module", "real time clock"], reply: "An RTC (Real-Time Clock) module (like the DS3231) keeps accurate time even when the main board is powered off, using a backup battery." },
             { keywords: ["camera module"], reply: "A camera module captures images or video and can be used with boards like the ESP32-CAM or Raspberry Pi Camera for vision projects." },
             { keywords: ["fingerprint sensor"], reply: "A fingerprint sensor captures and matches fingerprint patterns, commonly used for biometric access control." },
- 
+
             // ---------- ACTUATORS / MOTORS ----------
             { keywords: ["servo motor"], reply: "Servo motors rotate to precise angles, typically between 0° and 180°, controlled using a PWM signal." },
             { keywords: ["stepper motor"], reply: "Stepper motors move in fixed, discrete steps for precise positioning without needing a feedback sensor." },
@@ -1291,14 +1288,14 @@ Aayushtronics · HTML
             { keywords: ["buzzer"], reply: "A buzzer produces sound when powered, used for alerts, alarms, and simple audio feedback in projects." },
             { keywords: ["relay module", "relay"], reply: "A relay is an electrically operated switch that allows a low-voltage circuit to safely control a high-voltage or high-current load." },
             { keywords: ["solenoid"], reply: "A solenoid converts electrical energy into linear mechanical motion, often used for locks and valves." },
- 
+
             // ---------- DISPLAYS ----------
             { keywords: ["lcd"], reply: "A 16x2 LCD displays text and numbers using a grid of characters, commonly interfaced via I2C for fewer wiring pins." },
             { keywords: ["oled"], reply: "OLED displays provide high contrast, wide viewing angles, and low power consumption, popular for small project displays." },
             { keywords: ["tft"], reply: "TFT displays show full-color graphics and are used when a project needs richer visual output than a simple character LCD." },
             { keywords: ["seven segment"], reply: "Seven-segment displays show numbers from 0 to 9 (and some letters) using seven individually controllable LED segments." },
             { keywords: ["led matrix"], reply: "An LED matrix arranges LEDs in rows and columns to display text, patterns, or simple animations." },
- 
+
             // ---------- PCB / TOOLS ----------
             { keywords: ["pcb"], reply: "A Printed Circuit Board (PCB) permanently connects electronic components using etched copper tracks on an insulating board." },
             { keywords: ["kicad"], reply: "KiCad is a free, open-source PCB design software used to create schematics and circuit board layouts." },
@@ -1306,7 +1303,7 @@ Aayushtronics · HTML
             { keywords: ["gerber"], reply: "Gerber files are the standard format PCB manufacturers use to fabricate a board from your design." },
             { keywords: ["altium"], reply: "Altium Designer is a professional PCB design tool used widely in industry for complex, multi-layer board layouts." },
             { keywords: ["smd", "through hole"], reply: "SMD (Surface Mount Device) components solder directly onto the PCB surface, while through-hole components have leads inserted through drilled holes — SMD is smaller, through-hole is easier to hand-solder." },
- 
+
             // ---------- ROBOTICS / PROJECTS ----------
             { keywords: ["robot"], reply: "A robot combines sensors, actuators, and a controller to sense its environment and perform automated tasks." },
             { keywords: ["line follower"], reply: "A line follower robot uses IR sensors to detect a line's contrast against the floor and steer itself along the path." },
@@ -1315,37 +1312,37 @@ Aayushtronics · HTML
             { keywords: ["embedded systems"], reply: "Embedded Systems involve designing dedicated hardware and software combinations for specific tasks, like smart appliances, automobiles, and IoT devices." },
             { keywords: ["drone", "quadcopter"], reply: "A drone (quadcopter) uses four motors and an ESC-driven flight controller with an IMU to achieve stable, controlled flight." },
             { keywords: ["home automation", "smart home"], reply: "Home automation uses microcontrollers, relays, and sensors — often connected over Wi-Fi — to control lights, appliances, and security remotely." },
- 
+
             // ---------- IOT PLATFORMS ----------
             { keywords: ["blynk"], reply: "Blynk is a mobile app platform that lets you build a custom dashboard to control and monitor IoT hardware like ESP32 or Arduino." },
             { keywords: ["thingspeak"], reply: "ThingSpeak is a cloud platform for logging and visualizing sensor data from IoT devices over time." },
             { keywords: ["node-red", "node red"], reply: "Node-RED is a visual, flow-based programming tool for wiring together IoT devices, APIs, and online services." },
             { keywords: ["firebase"], reply: "Firebase provides a real-time cloud database and backend services often used to store and sync IoT sensor data." },
- 
+
             // ---------- CAREER ----------
             { keywords: ["electronics engineer"], reply: "Electronics engineers design circuits, embedded systems, communication devices, and automation solutions across many industries." },
             { keywords: ["interview"], reply: "For electronics interviews, brush up on Ohm's Law, transistors, logic gates, Arduino/embedded basics, communication protocols, and embedded C." },
             { keywords: ["project ideas"], reply: "Popular beginner-to-intermediate projects: Smart Home Automation, Weather Station, IoT Plant Monitoring, Line Follower Robot, Smart Parking System, and Home Security System." },
             { keywords: ["internship"], reply: "Internships help you gain hands-on experience in electronics, embedded systems, IoT, PCB design, and automation before entering the industry." },
         ];
- 
+
         /* ============================================================
            MATCHING ENGINE
         ============================================================ */
         function normalize(text) {
             return ' ' + text.toLowerCase().replace(/[?.!,]/g, ' ').replace(/\s+/g, ' ').trim() + ' ';
         }
- 
+
         function personalize(reply) {
             const tag = userName ? ` ${userName}` : '';
             return reply.replace(/\{name\}/g, tag);
         }
- 
+
         function getBotResponse(rawInput) {
             const normalized = normalize(rawInput);
             let best = null;
             let bestScore = -1;
- 
+
             for (const entry of KB) {
                 for (const kw of entry.keywords) {
                     const kwNorm = kw.trim().toLowerCase();
@@ -1357,9 +1354,9 @@ Aayushtronics · HTML
                     }
                 }
             }
- 
+
             if (best) return personalize(best.reply);
- 
+
             const fallback = [
                 "I'm not picking up that signal. Could you specify the component, protocol, or circuit concept you need help with?",
                 "That one's outside my current knowledge base — try asking about a specific component, sensor, or microcontroller.",
@@ -1370,4 +1367,3 @@ Aayushtronics · HTML
     </script>
 </body>
 </html>
- 
