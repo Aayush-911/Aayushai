@@ -229,6 +229,29 @@
         }
         .header-logo .dot { color: var(--accent); }
 
+        #backend-status {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.68rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        #backend-status .dot-indicator {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #6d7073;
+            transition: background 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        #backend-status.connected .dot-indicator { background: #3ecf7e; box-shadow: 0 0 6px rgba(62, 207, 126, 0.6); }
+        #backend-status.local .dot-indicator { background: var(--accent); }
+
         #chat-window {
             flex: 1;
             padding: 24px 24px 120px 24px;
@@ -285,14 +308,19 @@
             height: 52px;
             margin: 0 auto 20px auto;
             border-radius: 50%;
-            background: #fff;
+            background: var(--surface);
+            border: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 6px 24px rgba(59, 111, 224, 0.25);
+            box-shadow: 0 6px 24px rgba(59, 111, 224, 0.18);
+            font-weight: 800;
+            font-size: 1.1rem;
+            letter-spacing: -0.5px;
+            color: #ffffff;
         }
 
-        #hero-badge svg { width: 30px; height: 30px; }
+        #hero-badge .dot { color: var(--accent); }
 
         #hero-title {
             font-size: 1.7em;
@@ -367,10 +395,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #fff;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            font-weight: 800;
+            font-size: 0.72rem;
+            letter-spacing: -0.4px;
+            color: #ffffff;
         }
 
-        .bot-icon svg { width: 20px; height: 20px; }
+        .bot-icon .dot { color: var(--accent); }
 
         .bot-msg {
             color: var(--text-primary);
@@ -584,8 +617,7 @@
             .user-msg, .bot-msg { max-width: 90%; }
             .user-msg { padding: 10px 16px; font-size: 0.96rem; }
             .bot-msg { font-size: 0.96rem; }
-            .bot-icon { width: 28px; height: 28px; min-width: 28px; }
-            .bot-icon svg { width: 17px; height: 17px; }
+            .bot-icon { width: 28px; height: 28px; min-width: 28px; font-size: 0.64rem; }
 
             #input-area-wrapper {
                 padding: 0 14px calc(14px + env(safe-area-inset-bottom)) 14px;
@@ -601,8 +633,7 @@
             }
 
             #hero-title-wrap { width: 90%; transform: translate(-50%, calc(-100% - 56px)); }
-            #hero-badge { width: 44px; height: 44px; margin-bottom: 14px; }
-            #hero-badge svg { width: 26px; height: 26px; }
+            #hero-badge { width: 44px; height: 44px; margin-bottom: 14px; font-size: 0.95rem; }
             #hero-title { font-size: 1.35em; }
             #hero-subtitle { font-size: 0.88rem; margin-bottom: 18px; }
             #chat-container.mode-hero #input-area-wrapper { width: 90%; }
@@ -614,6 +645,7 @@
         /* Extra-small phones */
         @media (max-width: 400px) {
             #chat-header { font-size: 1.02em; padding-left: calc(12px + env(safe-area-inset-left)); }
+            #backend-status-text { display: none; }
             #chat-window { padding-left: 10px; padding-right: 10px; }
             .user-msg, .bot-msg { max-width: 94%; }
             #hero-title { font-size: 1.2em; }
@@ -675,19 +707,21 @@
                 <span class="material-symbols-outlined">menu</span>
             </button>
             <span class="header-logo">Aayushtronics<span class="dot">.</span></span>
+            <span id="backend-status" title="Checking for a local AI backend…">
+                <span class="dot-indicator"></span>
+                <span id="backend-status-text">Checking…</span>
+            </span>
         </div>
 
         <div id="hero-title-wrap">
-            <div id="hero-badge">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.6601 23C11.5204 16.9247 6.64333 12.0476 0.567993 11.9079V11.0921C6.64333 10.9524 11.5204 6.0753 11.6601 0H12.4759C12.6156 6.0753 17.4927 10.9524 23.568 11.0921V11.9079C17.4927 12.0476 12.6156 16.9247 12.4759 23H11.6601Z" fill="#131314"/></svg>
-            </div>
+            <div id="hero-badge">AT<span class="dot">.</span></div>
             <div id="hero-title">Aayushtronics<span style="color:var(--accent);">.</span></div>
             <div id="hero-subtitle">Your electronics &amp; embedded-systems assistant. Ask about microcontrollers, sensors, protocols, or circuit basics.</div>
             <div id="hero-chips">
                 <button class="hero-chip" onclick="sendMessage('Tell me about Arduino Uno')">Arduino Uno</button>
                 <button class="hero-chip" onclick="sendMessage('What is ESP32?')">ESP32</button>
                 <button class="hero-chip" onclick="sendMessage('ESP32 vs ESP8266')">ESP32 vs ESP8266</button>
-                <button class="hero-chip" onclick="sendMessage('Raspberry Pi')">Raspberry Pi</button>
+                <button class="hero-chip" onclick="sendMessage('Difference between DHT11 and DHT22')">DHT11 vs DHT22</button>
                 <button class="hero-chip" onclick="sendMessage('Explain I2C protocol')">I2C protocol</button>
                 <button class="hero-chip" onclick="sendMessage('What is PWM?')">PWM</button>
             </div>
@@ -722,7 +756,18 @@
         let chats = JSON.parse(localStorage.getItem(STORAGE_KEYS.CHATS) || '[]');
         let activeChatId = localStorage.getItem(STORAGE_KEYS.ACTIVE) || null;
 
-        const BOT_ICON_SVG = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.6601 23C11.5204 16.9247 6.64333 12.0476 0.567993 11.9079V11.0921C6.64333 10.9524 11.5204 6.0753 11.6601 0H12.4759C12.6156 6.0753 17.4927 10.9524 23.568 11.0921V11.9079C17.4927 12.0476 12.6156 16.9247 12.4759 23H11.6601Z" fill="#131314"/></svg>`;
+        const BOT_ICON_HTML = `AT<span class="dot">.</span>`;
+
+        /* ============================================================
+           OPTIONAL BACKEND SERVER
+           If server.js is running locally (node server.js), the app
+           uses it to answer questions instead of the in-browser engine.
+           If it isn't running — the common case, since this is usually
+           just opened as a static file — everything still works, fully
+           offline, using the identical logic built into this page.
+        ============================================================ */
+        const BACKEND_URL = 'http://localhost:8787';
+        let backendAvailable = false;
 
         /* ============================================================
            INIT
@@ -746,6 +791,7 @@
 
             updateHeroGreeting();
             renderHistoryList();
+            checkBackend();
 
             if (activeChatId && chats.find(c => c.id === activeChatId)) {
                 loadChat(activeChatId, true);
@@ -992,11 +1038,90 @@
             setChatTitleFromFirstMessage(messageText);
 
             showTypingIndicator();
-            setTimeout(() => {
+            fetchReply(messageText, wasHero ? 200 : 0).then((botReply) => {
                 removeTypingIndicator();
-                const botReply = getBotResponse(messageText);
                 appendBotMessage(botReply);
-            }, 550 + Math.random() * 350 + (wasHero ? 200 : 0));
+            });
+        }
+
+        /* ============================================================
+           BACKEND CONNECTIVITY
+        ============================================================ */
+
+        // Pings the optional backend once on load. Silently leaves
+        // backendAvailable = false if it's not running — no error shown
+        // to the user, since running the server is entirely optional.
+        async function checkBackend() {
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 1200);
+                const res = await fetch(BACKEND_URL + '/api/health', { signal: controller.signal });
+                clearTimeout(timeoutId);
+                backendAvailable = res.ok;
+            } catch (err) {
+                backendAvailable = false;
+            }
+            updateBackendIndicator();
+        }
+
+        function updateBackendIndicator() {
+            const el = document.getElementById('backend-status');
+            const textEl = document.getElementById('backend-status-text');
+            if (!el || !textEl) return;
+            el.classList.remove('connected', 'local');
+            if (backendAvailable) {
+                el.classList.add('connected');
+                textEl.textContent = 'Backend connected';
+                el.title = 'Answers are being generated by the local Node.js backend (server.js).';
+            } else {
+                el.classList.add('local');
+                textEl.textContent = 'Local AI mode';
+                el.title = 'No backend server detected — running fully in-browser. Run "node server.js" to enable the backend.';
+            }
+        }
+
+        // Sends the question to the backend's analyzer. Throws on any
+        // network error, bad status, or malformed response so the caller
+        // can fall back to the identical in-browser engine.
+        async function askBackend(messageText) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 4000);
+            try {
+                const res = await fetch(BACKEND_URL + '/api/ask', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: messageText, userName: userName }),
+                    signal: controller.signal
+                });
+                if (!res.ok) throw new Error('Backend responded with status ' + res.status);
+                const data = await res.json();
+                if (!data || typeof data.reply !== 'string') throw new Error('Malformed backend response');
+                return data.reply;
+            } finally {
+                clearTimeout(timeoutId);
+            }
+        }
+
+        // Resolves to the final reply text, preferring the backend when
+        // available and transparently falling back to the local engine
+        // (and marking the backend as unavailable) if the request fails.
+        // A small minimum delay keeps the typing indicator feeling natural
+        // even when the local engine (or a fast backend) answers instantly.
+        async function fetchReply(messageText, extraDelay) {
+            const minDelay = new Promise((resolve) => {
+                setTimeout(resolve, 550 + Math.random() * 350 + (extraDelay || 0));
+            });
+
+            const replyPromise = backendAvailable
+                ? askBackend(messageText).catch(() => {
+                    backendAvailable = false;
+                    updateBackendIndicator();
+                    return getBotResponse(messageText);
+                })
+                : Promise.resolve(getBotResponse(messageText));
+
+            const [reply] = await Promise.all([replyPromise, minDelay]);
+            return personalize(reply);
         }
 
         function updateSendBtnState() {
@@ -1041,7 +1166,7 @@
             wrapper.className = 'message-wrapper bot-wrapper';
             const iconDiv = document.createElement('div');
             iconDiv.className = 'bot-icon';
-            iconDiv.innerHTML = BOT_ICON_SVG;
+            iconDiv.innerHTML = BOT_ICON_HTML;
             const msgDiv = document.createElement('div');
             msgDiv.className = 'bot-msg';
             msgDiv.textContent = text;
@@ -1058,7 +1183,7 @@
             wrapper.id = 'typing-wrapper';
             const iconDiv = document.createElement('div');
             iconDiv.className = 'bot-icon';
-            iconDiv.innerHTML = BOT_ICON_SVG;
+            iconDiv.innerHTML = BOT_ICON_HTML;
             const msgDiv = document.createElement('div');
             msgDiv.className = 'bot-msg typing-dots';
             msgDiv.innerHTML = '<span></span><span></span><span></span>';
@@ -1093,11 +1218,11 @@
         ============================================================ */
         const KB = [
             // ---------- GREETINGS / META ----------
-            { keywords: ["hello", "hi", "hey", "yo "], reply: "Greetings{name}! Ready to troubleshoot some circuits or learn basic electronics?" },
-            { keywords: ["help", "what can you do"], reply: "I can help with hardware specs, circuit concepts, components, microcontrollers, sensors, communication protocols, PCB design, and robotics. Just type a keyword — for example \"esp32\", \"i2c\", or \"servo motor\"." },
-            { keywords: ["who are you", "your name"], reply: "I'm the Aayushtronics AI agent — a hardware and embedded-systems assistant built to answer your electronics questions." },
-            { keywords: ["thank"], reply: "Anytime{name}! Ask away whenever you're stuck on a circuit." },
-            { keywords: ["bye", "goodbye", "see you"], reply: "Powering down. Happy tinkering{name}!" },
+            { keywords: ["hello", "hi", "hey", "yo "], meta: true, reply: "Greetings{name}! Ready to troubleshoot some circuits or learn basic electronics?" },
+            { keywords: ["help", "what can you do"], meta: true, reply: "I can help with hardware specs, circuit concepts, components, microcontrollers, sensors, communication protocols, PCB design, and robotics. Just type a keyword — for example \"esp32\", \"i2c\", or \"servo motor\"." },
+            { keywords: ["who are you", "your name"], meta: true, reply: "I'm the Aayushtronics AI agent — a hardware and embedded-systems assistant built to answer your electronics questions." },
+            { keywords: ["thank"], meta: true, reply: "Anytime{name}! Ask away whenever you're stuck on a circuit." },
+            { keywords: ["bye", "goodbye", "see you"], meta: true, reply: "Powering down. Happy tinkering{name}!" },
 
             // ---------- FUNDAMENTALS ----------
             { keywords: ["resistor"], reply: "A resistor limits current flow in a circuit and creates a voltage drop, measured in ohms (Ω). Resistance is calculated using Ohm's Law: V = I × R." },
@@ -1168,7 +1293,7 @@
             // ---------- MICROCONTROLLERS / BOARDS ----------
             { keywords: ["arduino uno", "uno board", "uno r3", "atmega328p board"], reply: "Arduino Uno — the classic beginner board\n• MCU: ATmega328P (8-bit AVR), 16MHz clock\n• 14 digital I/O pins (6 give PWM output)\n• 6 analog inputs, 10-bit ADC\n• Memory: 32KB Flash, 2KB SRAM, 1KB EEPROM\n• Operating voltage: 5V, powered via USB or 7–12V barrel jack\n\nIt's simple, rock-solid, and has the largest tutorial/library ecosystem of any board — the natural starting point before moving to something like the ESP32 for wireless projects." },
             { keywords: ["arduino nano", "nano board"], reply: "Arduino Nano — Uno's compact cousin\n• Same ATmega328P chip and 16MHz clock as the Uno\n• 14 digital pins, 8 analog inputs (2 more than the Uno)\n• Breadboard-friendly: no barrel jack, powered via Mini/Micro-USB\n• Much smaller footprint, so it fits well inside enclosures or on protoboards\n\nChoose the Nano over the Uno when board size matters; choose the Uno when you want easier shield compatibility." },
-            { keywords: ["arduino uno vs nano", "uno vs nano", "nano vs uno"], reply: "Arduino Uno vs Nano\n• Chip: both use the ATmega328P at 16MHz — same processing power\n• Size: Nano is much smaller and breadboard-friendly; Uno is larger with a standard shield header\n• Analog pins: Nano has 8, Uno has 6\n• Power/USB: Uno uses USB-B + barrel jack; Nano uses Mini/Micro-USB only\n\nFunctionally they're nearly identical — pick based on the physical footprint and connector your project needs." },
+            { keywords: ["arduino uno vs nano", "uno vs nano", "nano vs uno", "difference between arduino uno and nano", "difference between uno and nano", "arduino uno and nano"], curated: true, reply: "Arduino Uno vs Nano\n• Chip: both use the ATmega328P at 16MHz — same processing power\n• Size: Nano is much smaller and breadboard-friendly; Uno is larger with a standard shield header\n• Analog pins: Nano has 8, Uno has 6\n• Power/USB: Uno uses USB-B + barrel jack; Nano uses Mini/Micro-USB only\n\nFunctionally they're nearly identical — pick based on the physical footprint and connector your project needs." },
             { keywords: ["arduino mega"], reply: "Arduino Mega — the pin-heavy option\n• MCU: ATmega2560, 16MHz\n• 54 digital I/O pins (15 with PWM), 16 analog inputs\n• Memory: 256KB Flash, 8KB SRAM, 4KB EEPROM\n• 4 hardware UARTs (vs 1 on the Uno)\n\nUse it when a project needs far more I/O or memory than an Uno can offer — e.g. large LED matrices, multi-sensor rigs, or 3D printer controllers." },
             { keywords: ["arduino leonardo"], reply: "The Arduino Leonardo uses an ATmega32u4 with built-in USB support, letting it act as a keyboard or mouse to a computer." },
             { keywords: ["arduino ide"], reply: "Arduino IDE is the official software used for writing, compiling, and uploading Arduino programs to a board. It supports Arduino boards natively and ESP32/ESP8266/STM32 via additional board packages." },
@@ -1176,11 +1301,11 @@
             { keywords: ["esp32 pinout"], reply: "ESP32 DevKit boards typically expose ~30 GPIO pins including several ADC1/ADC2 channels, a DAC pair (GPIO25/26), touch pins (T0–T9), and dedicated I2C/SPI/UART pins — but the exact pinout varies by board variant (WROOM-32, WROVER, S2, S3, C3), so always check your specific board's datasheet before wiring." },
             { keywords: ["esp32 cam"], reply: "The ESP32-CAM adds an OV2640 camera module and microSD slot to the ESP32, making it a low-cost option for Wi-Fi video streaming, motion-triggered photo capture, and basic computer-vision projects." },
             { keywords: ["esp8266", "esp-8266", "nodemcu"], reply: "ESP8266 — the budget Wi-Fi chip\n• Single-core Tensilica L106, up to 80MHz (often overclocked to 160MHz)\n• Built-in Wi-Fi 802.11 b/g/n (no Bluetooth)\n• Far fewer usable GPIOs than the ESP32 (~9 on most NodeMCU boards), 1 analog input\n• Lower cost and lower power than the ESP32, but no Bluetooth and less processing headroom\n\nGood choice for simple, cost-sensitive Wi-Fi projects — sensor nodes, smart switches — where you don't need Bluetooth or heavy processing." },
-            { keywords: ["esp32 vs esp8266", "esp8266 vs esp32"], reply: "ESP32 vs ESP8266\n• Cores: ESP32 is dual-core; ESP8266 is single-core\n• Wireless: ESP32 has Wi-Fi + Bluetooth/BLE; ESP8266 has Wi-Fi only\n• GPIOs: ESP32 exposes far more usable pins and a real ADC/DAC; ESP8266 is limited (1 analog input, ~9 GPIOs)\n• Cost/power: ESP8266 is cheaper and sips less power for simple tasks\n\nPick the ESP8266 for a simple, low-cost Wi-Fi sensor node; pick the ESP32 when you need Bluetooth, more pins, or more processing power." },
+            { keywords: ["esp32 vs esp8266", "esp8266 vs esp32", "difference between esp32 and esp8266", "esp32 and esp8266"], curated: true, reply: "ESP32 vs ESP8266\n• Cores: ESP32 is dual-core; ESP8266 is single-core\n• Wireless: ESP32 has Wi-Fi + Bluetooth/BLE; ESP8266 has Wi-Fi only\n• GPIOs: ESP32 exposes far more usable pins and a real ADC/DAC; ESP8266 is limited (1 analog input, ~9 GPIOs)\n• Cost/power: ESP8266 is cheaper and sips less power for simple tasks\n\nPick the ESP8266 for a simple, low-cost Wi-Fi sensor node; pick the ESP32 when you need Bluetooth, more pins, or more processing power." },
             { keywords: ["raspberry pi 4"], reply: "Raspberry Pi 4 is the flagship full-size Pi: a quad-core Cortex-A72 SoC, up to 8GB RAM, Gigabit Ethernet, dual micro-HDMI (dual 4K display support), and USB 3.0 — powerful enough to run a full Linux desktop, making it suited to projects needing real computing power, not just I/O control." },
             { keywords: ["raspberry pi zero"], reply: "Raspberry Pi Zero (and Zero 2 W) is the ultra-compact, low-cost member of the Pi family — a full Linux SBC with Wi-Fi/Bluetooth in a tiny form factor, popular for lightweight IoT projects and embedding a full OS into small enclosures." },
             { keywords: ["raspberry pi pico"], reply: "Raspberry Pi Pico is different from the rest of the Pi family: it's a microcontroller board built around Raspberry Pi's own RP2040 chip (dual-core ARM Cortex-M0+), not a Linux computer. It behaves more like an Arduino — you flash it with MicroPython or C/C++ — and it's known for its PIO (Programmable I/O) blocks, which let you offload custom protocols to dedicated state machines." },
-            { keywords: ["raspberry pi vs arduino", "arduino vs raspberry pi"], reply: "Raspberry Pi vs Arduino\n• Raspberry Pi is a full computer running Linux — it boots an OS, runs multiple programs at once, and handles things like video, networking stacks, and file systems.\n• Arduino (and similar microcontroller boards) runs one program directly on bare metal, with instant-on, deterministic timing, and much lower power draw.\n\nUse a Pi when a project needs an OS, a display, or heavier computation (e.g. a media server or vision pipeline); use an Arduino/ESP32 when you need precise, low-power, real-time control of GPIOs, motors, or sensors." },
+            { keywords: ["raspberry pi vs arduino", "arduino vs raspberry pi", "difference between raspberry pi and arduino", "raspberry pi and arduino"], curated: true, reply: "Raspberry Pi vs Arduino\n• Raspberry Pi is a full computer running Linux — it boots an OS, runs multiple programs at once, and handles things like video, networking stacks, and file systems.\n• Arduino (and similar microcontroller boards) runs one program directly on bare metal, with instant-on, deterministic timing, and much lower power draw.\n\nUse a Pi when a project needs an OS, a display, or heavier computation (e.g. a media server or vision pipeline); use an Arduino/ESP32 when you need precise, low-power, real-time control of GPIOs, motors, or sensors." },
             { keywords: ["raspberry pi"], reply: "Raspberry Pi is a full single-board computer (SBC) running Linux — with a CPU, RAM, storage (microSD), HDMI output, USB, and networking all onboard. Popular models include the Pi 4 (full performance), Pi Zero (compact/low-cost), and the microcontroller-class Pi Pico (RP2040 chip, not Linux-based). Reach for a Pi over an Arduino/ESP32 whenever a project needs an operating system, a display, or more processing/storage headroom." },
             { keywords: ["stm32"], reply: "STM32 is a family of ARM Cortex-M based microcontrollers from STMicroelectronics, offering high performance for industrial and embedded applications." },
             { keywords: ["which microcontroller", "best board for beginners", "choosing a microcontroller"], reply: "Picking a board:\n• Just learning electronics → Arduino Uno (huge community, simple)\n• Need Wi-Fi/Bluetooth → ESP32 (or ESP8266 for a cheaper Wi-Fi-only option)\n• Need an operating system, display, or heavy compute → Raspberry Pi\n• Need many I/O pins or memory → Arduino Mega or STM32\n• Want Arduino-style coding with custom I/O tricks → Raspberry Pi Pico (RP2040)" },
@@ -1188,7 +1313,7 @@
             { keywords: ["8051"], reply: "The 8051 is a classic 8-bit microcontroller architecture from Intel, still taught widely for learning embedded systems fundamentals." },
             { keywords: ["avr"], reply: "AVR is the 8-bit microcontroller architecture used in classic Arduino boards (e.g. ATmega328P), known for simplicity and ease of use." },
             { keywords: ["arm cortex", "arm processor"], reply: "ARM Cortex processors are widely used in microcontrollers (like STM32 and ESP32) for their efficiency and strong performance-per-watt." },
-            { keywords: ["microcontroller vs microprocessor", "difference between microcontroller and microprocessor"], reply: "A microcontroller integrates CPU, RAM, ROM, and I/O on a single chip for embedded tasks, while a microprocessor needs external memory and peripherals and is used for general-purpose computing." },
+            { keywords: ["microcontroller vs microprocessor", "difference between microcontroller and microprocessor"], curated: true, reply: "A microcontroller integrates CPU, RAM, ROM, and I/O on a single chip for embedded tasks, while a microprocessor needs external memory and peripherals and is used for general-purpose computing." },
             { keywords: ["clock speed"], reply: "Clock speed defines how many operations per second a microcontroller can perform, measured in Hz (e.g. 16MHz, 240MHz)." },
             { keywords: ["flash memory"], reply: "Flash memory stores the program code on a microcontroller and retains data even without power." },
             { keywords: ["ram"], reply: "RAM (Random Access Memory) is volatile memory used to store variables and temporary data while a program runs." },
@@ -1318,17 +1443,203 @@
             { keywords: ["thingspeak"], reply: "ThingSpeak is a cloud platform for logging and visualizing sensor data from IoT devices over time." },
             { keywords: ["node-red", "node red"], reply: "Node-RED is a visual, flow-based programming tool for wiring together IoT devices, APIs, and online services." },
             { keywords: ["firebase"], reply: "Firebase provides a real-time cloud database and backend services often used to store and sync IoT sensor data." },
+            { keywords: ["aws iot"], reply: "AWS IoT Core lets devices connect securely to the cloud over MQTT/HTTPS, publish sensor data, and be controlled remotely — commonly paired with an ESP32 for production-grade IoT fleets." },
+            { keywords: ["azure iot"], reply: "Azure IoT Hub is Microsoft's cloud service for connecting, monitoring, and managing IoT devices at scale, with built-in device-to-cloud and cloud-to-device messaging." },
+            { keywords: ["google cloud iot", "cloud iot core"], reply: "Cloud IoT platforms (AWS IoT, Azure IoT Hub, Google Cloud IoT) all offer similar building blocks: device registries, secure MQTT/HTTPS ingestion, rules engines, and dashboards — the right one usually comes down to which cloud ecosystem the rest of your stack already uses." },
+
+            // ---------- CORE FORMULAS & CALCULATIONS ----------
+            { keywords: ["power formula", "p=vi", "watts law"], reply: "Power in a DC circuit: P = V × I (Watts = Volts × Amps). Combined with Ohm's Law (V = I × R), you can also write P = I²R or P = V²/R — useful for picking resistor wattage ratings or estimating battery life." },
+            { keywords: ["voltage divider"], reply: "A voltage divider uses two resistors in series to scale a higher voltage down to a lower, safe one: Vout = Vin × R2 / (R1 + R2). Common for reading a higher-voltage sensor with a 3.3V ADC pin." },
+            { keywords: ["current limiting resistor", "led resistor calculation"], reply: "To size an LED's current-limiting resistor: R = (Vsource − Vf_LED) / I_desired. For a 5V supply, a red LED (Vf ≈ 2V) at 15mA needs roughly (5−2)/0.015 ≈ 200Ω." },
+            { keywords: ["duty cycle"], reply: "Duty cycle is the percentage of one PWM period that a signal stays HIGH. A 50% duty cycle at a fixed frequency gives half the average output voltage/power — it's how PWM controls LED brightness or motor speed." },
+            { keywords: ["frequency vs period", "signal period"], reply: "Frequency (Hz) is how many cycles happen per second; period (seconds) is the time for one full cycle — they're reciprocals: f = 1 / T." },
+            { keywords: ["pull-up resistor", "pull up resistor", "pull-down resistor", "pull down resistor"], reply: "Pull-up/pull-down resistors hold a digital input at a known, stable level (HIGH or LOW) when nothing is actively driving it, preventing a floating pin from reading random noise. A pull-up ties the pin to Vcc through a resistor (default HIGH, pulled LOW when pressed); a pull-down does the opposite." },
+            { keywords: ["debounce", "button debounce", "switch bounce"], reply: "Button debouncing filters out the rapid, spurious HIGH/LOW flickers a mechanical switch produces when pressed, usually with a short software delay (e.g. ~20-50ms) or an RC filter, so one physical press registers as exactly one logical press." },
+            { keywords: ["optocoupler", "opto-isolator"], reply: "An optocoupler electrically isolates two circuits while still letting a signal pass between them, using an internal LED and photodetector — useful for protecting a microcontroller from a higher-voltage or noisy load circuit." },
+
+            // ---------- ADVANCED PROTOCOLS / DEBUG INTERFACES ----------
+            { keywords: ["jtag"], reply: "JTAG is a standard hardware debugging interface that lets you step through code, set breakpoints, and inspect registers directly on the chip — common on ARM-based boards like STM32." },
+            { keywords: ["swd"], reply: "SWD (Serial Wire Debug) is ARM's 2-wire alternative to JTAG for programming and debugging Cortex-M chips (like STM32), using fewer pins while offering the same core debugging features." },
+            { keywords: ["one-wire", "onewire", "1-wire"], reply: "1-Wire is a communication protocol that needs just a single data line (plus ground) to talk to multiple devices, most famously used by the DS18B20 temperature sensor." },
+            { keywords: ["i2s"], reply: "I2S (Inter-IC Sound) is a serial protocol specifically designed for streaming digital audio between chips, such as a microcontroller and a DAC or digital microphone." },
+            { keywords: ["ota update", "over the air update"], reply: "OTA (Over-The-Air) updates let a device like an ESP32 download and flash new firmware over Wi-Fi, without needing a physical USB connection — essential for deployed IoT devices." },
+
+            // ---------- MORE MODULES / SENSORS / ACTUATORS ----------
+            { keywords: ["potentiometer"], reply: "A potentiometer is a variable resistor with a rotating or sliding wiper, commonly used as an analog input for volume knobs, dimmers, or manual sensor calibration." },
+            { keywords: ["rotary encoder"], reply: "A rotary encoder detects rotation direction and steps (not absolute position like a potentiometer), often used for menu navigation or precise motor position feedback." },
+            { keywords: ["joystick module"], reply: "A joystick module outputs two analog voltages (X and Y axes) via internal potentiometers, plus a digital press button — common in robot controllers and game-style interfaces." },
+            { keywords: ["keypad", "matrix keypad"], reply: "A matrix keypad (like a 4x4 keypad) wires buttons in a row/column grid so a microcontroller can scan many keys using far fewer GPIO pins than one pin per button." },
+            { keywords: ["rgb led"], reply: "An RGB LED combines red, green, and blue LEDs in one package; driving each color channel with PWM at different intensities lets you mix millions of colors." },
+            { keywords: ["ir remote", "ir receiver", "infrared remote"], reply: "An IR receiver module decodes the pulsed infrared signal from a remote control into a digital code your microcontroller can read, commonly used to add remote-control input to a project." },
+            { keywords: ["peltier", "thermoelectric cooler", "tec module"], reply: "A Peltier module (thermoelectric cooler) creates a temperature difference across its two faces when current flows through it — one side cools, the other heats — used in mini fridges and CPU coolers." },
+            { keywords: ["cooling fan", "heat sink"], reply: "A heat sink passively draws heat away from a hot component via increased surface area, while a cooling fan actively moves air across it — both are used together when a voltage regulator, motor driver, or CPU runs hot." },
+            { keywords: ["linear actuator"], reply: "A linear actuator converts rotational motor motion into straight-line push/pull movement, often used in automated doors, adjustable stands, and robotics." },
+            { keywords: ["brushless motor", "bldc motor"], reply: "A brushless DC (BLDC) motor uses electronic commutation instead of physical brushes, giving higher efficiency, less wear, and higher speeds than a brushed DC motor — driven by an ESC (Electronic Speed Controller)." },
+            { keywords: ["esc", "electronic speed controller"], reply: "An ESC (Electronic Speed Controller) converts a PWM control signal into the multi-phase power a brushless motor needs, and is standard in drones and RC vehicles." },
+            { keywords: ["encoder motor", "motor with encoder"], reply: "A motor with an encoder adds a rotary sensor to the motor shaft, giving your microcontroller precise feedback on speed and position — essential for closed-loop robotics like self-balancing bots." },
+            { keywords: ["e-ink", "e paper", "eink display"], reply: "E-ink (electronic paper) displays hold an image with almost zero power once drawn, refresh slowly, and are highly readable in sunlight — popular for e-readers and low-power status displays." },
+            { keywords: ["sd card module"], reply: "An SD card module lets a microcontroller read/write files on a microSD card over SPI, commonly used for data logging, storing configuration, or serving web assets." },
+            { keywords: ["battery management system", "bms"], reply: "A BMS (Battery Management System) protects a Li-ion/LiPo battery pack by monitoring voltage, current, and temperature, balancing cells, and cutting off charging or discharging outside safe limits." },
+            { keywords: ["charge controller"], reply: "A solar charge controller regulates the variable voltage from a solar panel so it safely charges a battery without overcharging or reverse current at night." },
+
+            // ---------- SOFTWARE / EMBEDDED PROGRAMMING ----------
+            { keywords: ["embedded c"], reply: "Embedded C is standard C extended with hardware-specific concepts (registers, interrupts, memory-mapped I/O) used to program microcontrollers directly, close to the hardware." },
+            { keywords: ["micropython"], reply: "MicroPython is a lean Python implementation that runs directly on microcontrollers like the ESP32, Pico, and STM32 — great for fast prototyping since you can skip the compile step." },
+            { keywords: ["circuitpython"], reply: "CircuitPython is Adafruit's beginner-friendly fork of MicroPython, designed for ease of use on their boards, with drag-and-drop file editing over USB." },
+            { keywords: ["rust embedded", "rust microcontroller"], reply: "Rust is an increasingly popular option for embedded firmware, offering memory safety guarantees without a garbage collector — appealing for safety-critical or reliability-focused projects." },
+            { keywords: ["pid controller", "pid control"], reply: "A PID controller continuously corrects a system toward a target value using three terms — Proportional (current error), Integral (accumulated past error), and Derivative (rate of change) — widely used in motor speed control, drones, and temperature regulation." },
+            { keywords: ["tinyml", "edge ai", "ai on microcontroller"], reply: "TinyML runs small machine-learning models directly on a microcontroller (like the ESP32), enabling on-device tasks like keyword spotting or gesture recognition without sending data to the cloud." },
+
+            // ---------- TROUBLESHOOTING ----------
+            { keywords: ["board not detected", "not detected", "com port not showing", "driver not found"], reply: "If your board isn't detected: 1) install the correct USB-serial driver for its chip (CH340, CP2102, or FTDI), 2) try a different USB cable — many are charge-only with no data lines, 3) check the right COM port/board is selected in your IDE, 4) try another USB port." },
+            { keywords: ["upload failed", "programming failed", "avrdude error"], reply: "Common upload failures: wrong board/port selected, another program (like a Serial Monitor) holding the port open, a bad USB cable, or — on some ESP32/ESP8266 boards — needing to hold the BOOT button while uploading." },
+            { keywords: ["brownout", "brownout detector"], reply: "A brownout happens when supply voltage dips too low for the chip to run reliably, often from a weak power source or a motor/servo drawing a current spike — usually fixed with a beefier power supply or separate motor power rail." },
+            { keywords: ["how to read a datasheet", "reading datasheet"], reply: "When reading a datasheet: start with the pinout diagram, then the absolute maximum ratings (never exceed these), the recommended operating conditions, and the electrical characteristics table for typical values like voltage drop or current draw." },
+
+            // ---------- PCB PRACTICE ----------
+            { keywords: ["ground plane"], reply: "A ground plane is a large continuous copper area (often a full PCB layer) tied to ground, giving current a low-impedance return path and reducing noise — standard practice on multi-layer boards." },
+            { keywords: ["emi", "emc", "electromagnetic interference"], reply: "EMI (Electromagnetic Interference) is unwanted noise a circuit radiates or picks up; EMC (Electromagnetic Compatibility) design practices — proper grounding, decoupling capacitors, shielding — keep a device from causing or suffering from that interference." },
+            { keywords: ["decoupling capacitor", "bypass capacitor"], reply: "A decoupling (bypass) capacitor sits close to an IC's power pins to smooth out fast voltage dips as the chip switches, keeping the local supply stable." },
+            { keywords: ["ce marking", "fcc certification"], reply: "CE marking (EU) and FCC certification (US) confirm a finished electronic product meets required safety and electromagnetic-emissions standards before it can legally be sold in those markets." },
 
             // ---------- CAREER ----------
             { keywords: ["electronics engineer"], reply: "Electronics engineers design circuits, embedded systems, communication devices, and automation solutions across many industries." },
             { keywords: ["interview"], reply: "For electronics interviews, brush up on Ohm's Law, transistors, logic gates, Arduino/embedded basics, communication protocols, and embedded C." },
             { keywords: ["project ideas"], reply: "Popular beginner-to-intermediate projects: Smart Home Automation, Weather Station, IoT Plant Monitoring, Line Follower Robot, Smart Parking System, and Home Security System." },
             { keywords: ["internship"], reply: "Internships help you gain hands-on experience in electronics, embedded systems, IoT, PCB design, and automation before entering the industry." },
+            { keywords: ["portfolio project", "resume project"], reply: "Strong portfolio projects show the full loop: a real problem, a working circuit, code on GitHub, and a short write-up with photos or a demo video — 2-3 well-documented projects beat ten half-finished ones." },
+            { keywords: ["certification", "embedded certification"], reply: "Useful certifications/credentials for embedded and electronics roles include vendor-specific ones (ARM, STMicroelectronics academy programs), general ones like the Certified Embedded Systems Engineer, and — often more valued — a solid GitHub of working projects." },
+
+            // ---------- GENERAL CATCH-ALLS ----------
+            // Broader single-word terms people often type alone. Kept short
+            // so any more specific keyword above (e.g. "npn transistor",
+            // "arduino uno") still wins the match, since longer keywords
+            // are scored higher.
+            { keywords: ["transistor"], generic: true, reply: "A transistor is a semiconductor device used to switch or amplify electronic signals — the fundamental building block of modern electronics. The two main families are BJTs (current-controlled, e.g. NPN/PNP) and MOSFETs (voltage-controlled), each suited to different switching and amplification jobs." },
+            { keywords: ["microcontroller"], generic: true, reply: "A microcontroller is a small computer on a single chip — combining a CPU, RAM, ROM/Flash, and I/O peripherals (GPIO, ADC, PWM, UART, etc.) — used to run one dedicated program that controls a device. Popular families include AVR (Arduino), ESP32/ESP8266, STM32, and PIC." },
+            { keywords: ["sensor"], generic: true, reply: "A sensor detects a physical quantity — light, temperature, motion, distance, gas, pressure, and more — and converts it into an electrical signal a microcontroller can read. Ask me about a specific one (e.g. \"DHT11\", \"ultrasonic sensor\", \"MPU6050\") for details." },
+            { keywords: ["motor"], generic: true, reply: "Motors convert electrical energy into mechanical motion. The main types you'll meet in projects are DC motors (continuous rotation), servo motors (precise angle control), stepper motors (precise stepped rotation), and brushless motors (high efficiency, ESC-driven)." },
+            { keywords: ["protocol", "communication protocol"], generic: true, reply: "Communication protocols define how devices exchange data. Common ones in electronics: I2C and SPI (chip-to-chip, short range), UART (point-to-point serial), CAN and Modbus (industrial networks), and Wi-Fi/Bluetooth/MQTT/LoRa (wireless)." },
+            { keywords: ["circuit"], generic: true, reply: "A circuit is a closed loop that lets current flow from a power source, through components, and back to the source. Circuits are built as series (same current, split voltage) or parallel (same voltage, split current) connections, or a mix of both." },
+
+            // ---------- MICROPROCESSOR INTERNALS ----------
+            { keywords: ["alu", "arithmetic logic unit"], reply: "The ALU (Arithmetic Logic Unit) is the part of a CPU that actually performs math (add, subtract) and logic (AND, OR, NOT, comparisons) operations on data." },
+            { keywords: ["control unit"], reply: "The Control Unit directs a CPU's operation — it fetches instructions from memory, decodes them, and generates the signals that tell the ALU, registers, and memory what to do each clock cycle." },
+            { keywords: ["cpu registers", "processor registers"], reply: "Registers are tiny, extremely fast storage locations inside the CPU itself, used to hold data and addresses the processor is actively working with — far faster to access than RAM." },
+            { keywords: ["cache memory"], reply: "Cache memory is a small, very fast block of memory sitting between the CPU and main RAM, storing recently/frequently used data so the processor doesn't have to wait on slower RAM access every time." },
+            { keywords: ["instruction cycle", "fetch decode execute"], reply: "The instruction cycle (fetch–decode–execute) is the repeating sequence a CPU runs for every instruction: fetch it from memory, decode what it means, then execute it — repeated continuously at the clock speed." },
+            { keywords: ["bus system", "address bus", "data bus", "control bus"], reply: "A CPU communicates over three buses: the Address Bus (carries the memory location being accessed), the Data Bus (carries the actual data being read/written), and the Control Bus (carries signals like read/write, clock, and interrupts)." },
+            { keywords: ["8085"], reply: "The Intel 8085 is a classic 8-bit microprocessor from the 1970s, still taught widely to teach fundamental CPU architecture — instruction sets, addressing modes, and the fetch-decode-execute cycle — before moving to modern chips." },
+            { keywords: ["8086"], reply: "The Intel 8086 is a 16-bit microprocessor and the direct ancestor of the modern x86 architecture used in most desktop and laptop CPUs today." },
+            { keywords: ["x86", "x86 architecture"], reply: "x86 is the CPU instruction-set architecture used by most desktop, laptop, and server processors (Intel and AMD), descended from the 16-bit 8086 and now extended to 64-bit (x86-64/AMD64)." },
+
+            // ---------- MORE BOARDS ----------
+            { keywords: ["arduino due"], reply: "The Arduino Due is a 32-bit board built around an ARM Cortex-M3 (unlike the AVR-based Uno/Nano/Mega), running at 84MHz with more RAM and Flash — for projects that outgrow 8-bit Arduino boards but still want the Arduino ecosystem." },
+            { keywords: ["esp32-s2", "esp32 s2"], reply: "ESP32-S2 is a single-core Espressif variant with native USB (OTG) support and Wi-Fi, but — unlike the original ESP32 — no Bluetooth, aimed at cost-sensitive, USB-heavy IoT designs." },
+            { keywords: ["esp32-s3", "esp32 s3"], reply: "ESP32-S3 is a dual-core Espressif variant with Wi-Fi + BLE, native USB, and an AI-acceleration instruction set for vector operations — popular for camera and TinyML/edge-AI projects." },
+            { keywords: ["esp32-c3", "esp32 c3"], reply: "ESP32-C3 is a low-cost, single-core RISC-V variant (instead of Xtensa) with Wi-Fi + BLE, aimed at simple, price-sensitive IoT nodes." },
+            { keywords: ["stm32 blue pill", "blue pill board"], reply: "The STM32 'Blue Pill' is a cheap, widely available STM32F103 development board (ARM Cortex-M3) popular for learning STM32 and for hobby projects needing more performance than AVR-based Arduinos." },
+            { keywords: ["stm32 nucleo"], reply: "STM32 Nucleo boards are ST's official development boards, including a built-in ST-Link debugger/programmer and Arduino-compatible headers, making them an easy on-ramp into the STM32 ecosystem." },
+            { keywords: ["beaglebone"], reply: "BeagleBone is a full Linux single-board computer (like a Raspberry Pi) but with more real-time I/O capability thanks to its onboard PRU (Programmable Real-Time Units) — useful when a project needs both Linux and precise, low-latency hardware timing." },
+            { keywords: ["attiny", "attiny85"], reply: "ATtiny (e.g. ATtiny85) chips are tiny, low-pin-count AVR microcontrollers — the same family as the Arduino Uno's ATmega328P — used when a project needs just a few I/O pins in the smallest, cheapest possible package." },
+
+            // ---------- MORE PASSIVE / ACTIVE COMPONENTS ----------
+            { keywords: ["ceramic capacitor"], reply: "Ceramic capacitors are small, non-polarized capacitors good for high-frequency filtering and decoupling — you'll see them right next to IC power pins on most boards." },
+            { keywords: ["electrolytic capacitor"], reply: "Electrolytic capacitors offer much higher capacitance than ceramics in a small size, but are polarized (must be wired the correct way) — commonly used for smoothing power supply ripple." },
+            { keywords: ["transformer"], reply: "A transformer transfers AC electrical energy between two coils via a shared magnetic field, stepping voltage up or down — the basis of mains power adapters before the AC gets rectified to DC." },
+            { keywords: ["thermistor"], reply: "A thermistor is a resistor whose resistance changes predictably with temperature (usually decreasing as it heats up, called NTC), making it a simple, cheap temperature sensor." },
+            { keywords: ["ir led", "infrared led"], reply: "An IR LED emits infrared light invisible to the human eye, used to transmit remote-control codes or as the emitter half of an IR obstacle/line sensor." },
+            { keywords: ["laser diode"], reply: "A laser diode emits a narrow, coherent beam of light (unlike a regular LED's spread-out light), used in barcode scanners, laser pointers, and optical distance sensors." },
+            { keywords: ["bridge rectifier"], reply: "A bridge rectifier uses four diodes arranged to convert AC voltage into pulsating DC, the first stage of most linear and switching power supplies before smoothing capacitors clean it up." },
+
+            // ---------- MORE ICs ----------
+            { keywords: ["74hc595"], reply: "The 74HC595 is a serial-in, parallel-out shift register IC — it lets a microcontroller drive 8 extra digital outputs using only 3 pins, commonly used to expand LEDs or seven-segment displays." },
+            { keywords: ["cd4017"], reply: "The CD4017 is a decade counter/divider IC that sequentially activates one of 10 outputs on each clock pulse — popular in simple LED-chaser and sequencing circuits." },
+            { keywords: ["lm393"], reply: "The LM393 is a dual voltage comparator IC, commonly used on sensor breakout boards (like IR and sound sensors) to convert an analog signal into a clean digital HIGH/LOW output." },
+            { keywords: ["uln2003"], reply: "The ULN2003 is a Darlington transistor array IC used to drive higher-current loads (like relays, small stepper motors, or solenoids) from a microcontroller's low-current GPIO pins." },
+            { keywords: ["pc817"], reply: "The PC817 is a common single-channel optocoupler IC, used to electrically isolate a microcontroller's signal from a separate, potentially noisier or higher-voltage circuit." },
+            { keywords: ["max7219"], reply: "The MAX7219 IC drives up to eight 7-segment digits or a 8x8 LED dot-matrix display using just 3 control pins (SPI-like), handling all the multiplexing internally." },
+            { keywords: ["mcp23017"], reply: "The MCP23017 is an I2C GPIO expander IC that adds 16 extra digital I/O pins to a microcontroller over just two wires (SDA/SCL) — handy when you've run out of GPIOs." },
+
+            // ---------- MORE DISPLAYS ----------
+            { keywords: ["20x4 lcd"], reply: "A 20x4 LCD works just like the common 16x2 character LCD but shows 20 characters across 4 lines instead of 16 across 2 — useful when a project needs to display more information at once." },
+            { keywords: ["ips display"], reply: "IPS displays offer wider viewing angles and more accurate colors than standard TFT panels, at a similar interfacing complexity — a nice upgrade when display quality matters." },
+            { keywords: ["dot matrix display"], reply: "A dot matrix display arranges LEDs (or LCD segments) in a grid to show letters, numbers, or simple graphics — an 8x8 single module is often driven by a MAX7219 IC." },
+
+            // ---------- MORE MOTORS / DRIVERS ----------
+            { keywords: ["bo motor"], reply: "A BO (Battery Operated / gear) motor is a low-cost geared DC motor commonly used in beginner robot chassis kits for line followers and obstacle-avoiding robots, thanks to its built-in gearbox for extra torque." },
+            { keywords: ["l293d"], reply: "The L293D is a classic dual H-Bridge motor driver IC (a chip version of what the L298N module provides), letting a microcontroller control the speed and direction of two small DC motors." },
+            { keywords: ["tb6612fng"], reply: "The TB6612FNG is a compact, efficient dual-motor driver module — a popular modern upgrade over the L298N, with lower voltage drop and higher efficiency for small robots." },
+            { keywords: ["drv8825"], reply: "The DRV8825 is a stepper motor driver module supporting microstepping up to 1/32 step, commonly used in 3D printers and CNC machines for smoother, quieter motor movement than full-step drivers." },
+            { keywords: ["a4988"], reply: "The A4988 is a widely used stepper motor driver module (found in many budget 3D printers), supporting up to 1/16 microstepping and adjustable current limiting via an onboard potentiometer." },
+            { keywords: ["pca9685"], reply: "The PCA9685 is a 16-channel PWM driver IC controlled over I2C, commonly used to drive many servo motors (like a robot arm) or LEDs from just two microcontroller pins." },
+
+            // ---------- MORE SENSORS / RFID / GPS / RTC ----------
+            { keywords: ["water level sensor"], reply: "A water level sensor uses a series of exposed conductive traces to estimate liquid level by how many traces are submerged, commonly used in tanks and flood-detection projects." },
+            { keywords: ["rc522", "mfrc522"], reply: "The RC522 is a low-cost 13.56MHz RFID reader/writer module (SPI interface) used to read Mifare RFID cards and tags — a very common choice for access-control and attendance projects." },
+            { keywords: ["em18"], reply: "The EM18 is a 125kHz RFID reader module with a UART (serial) output, simpler to wire than the RC522 since it just streams the tag ID as text." },
+            { keywords: ["neo-6m", "neo6m", "ublox gps"], reply: "The NEO-6M is a popular, affordable GPS module that outputs NMEA sentences over UART, giving your microcontroller latitude, longitude, altitude, and time from satellite signals." },
+            { keywords: ["ds1307"], reply: "The DS1307 is a basic I2C real-time clock IC that keeps time using a backup coin-cell battery, though it's less accurate over temperature swings than the newer DS3231." },
+            { keywords: ["ds3231"], reply: "The DS3231 is a high-accuracy I2C real-time clock IC with a built-in temperature-compensated crystal, making it noticeably more precise than the older DS1307 for long-term timekeeping." },
+            { keywords: ["fram"], reply: "FRAM (Ferroelectric RAM) is non-volatile memory like EEPROM but with much faster write speed and far higher write-cycle endurance, used when a project needs to log data very frequently." },
+
+            // ---------- MORE COMMUNICATION MODULES ----------
+            { keywords: ["hc-05", "hc05"], reply: "The HC-05 is a classic Bluetooth serial module supporting both master and slave modes, commonly used to pair an Arduino with a phone app over Bluetooth Classic." },
+            { keywords: ["hc-06", "hc06"], reply: "The HC-06 is a Bluetooth serial module similar to the HC-05 but slave-only (it can be connected to, but can't initiate a connection itself) — simpler and slightly cheaper." },
+            { keywords: ["nrf24l01"], reply: "The nRF24L01 is a low-cost 2.4GHz wireless transceiver module used for short-range, low-power communication between two or more microcontrollers — a popular choice for RC and sensor-network projects that don't need Wi-Fi/internet." },
+            { keywords: ["sim800l"], reply: "The SIM800L is a compact GSM/GPRS module that lets a microcontroller send SMS messages, make calls, or use mobile data — common in remote monitoring projects with no Wi-Fi coverage." },
+            { keywords: ["sim900"], reply: "The SIM900 is an earlier, larger GSM/GPRS module offering similar SMS/call/data capability to the SIM800L, often found on a shield form-factor for Arduino." },
+            { keywords: ["ethernet module", "w5500", "enc28j60"], reply: "An Ethernet module (like the ENC28J60 or W5500) gives a microcontroller a wired internet connection over SPI — more reliable and lower-latency than Wi-Fi for fixed-location IoT devices." },
+            { keywords: ["can module", "mcp2515"], reply: "A CAN module (commonly built around the MCP2515 controller) lets a microcontroller join a CAN bus network, widely used in automotive and industrial systems." },
+            { keywords: ["xbee"], reply: "XBee modules provide easy-to-configure wireless mesh networking (Zigbee or proprietary protocols), popular in industrial and sensor-network projects that need reliable multi-hop wireless coverage." },
+
+            // ---------- MORE PROTOCOLS / SOFTWARE ----------
+            { keywords: ["http", "hypertext transfer protocol"], reply: "HTTP is the protocol web browsers and IoT devices use to request and send data to a server — the foundation of most web-based APIs a microcontroller might talk to." },
+            { keywords: ["https"], reply: "HTTPS is HTTP encrypted with TLS/SSL, so data exchanged between a device and a server can't be read or tampered with in transit — important whenever an IoT device sends real credentials or sensitive data." },
+            { keywords: ["websocket"], reply: "WebSocket is a protocol that keeps a persistent, two-way connection open between a device and a server, letting data flow instantly in both directions — better than repeated HTTP requests for real-time dashboards." },
+            { keywords: ["proteus"], reply: "Proteus is circuit-simulation software that lets you build and test a schematic — including running real Arduino/AVR code against a simulated circuit — before touching real hardware." },
+            { keywords: ["tinkercad"], reply: "Tinkercad Circuits is a free, browser-based circuit simulator good for beginners, letting you wire up components and run Arduino code virtually with no software installation." },
+            { keywords: ["wokwi"], reply: "Wokwi is a free, browser-based simulator for Arduino, ESP32, and Raspberry Pi Pico projects, supporting many common sensors and modules — great for testing code before it touches real hardware." },
+
+            // ---------- PROJECT IDEAS ----------
+            { keywords: ["telegram bot"], reply: "An ESP32/ESP8266 Telegram bot project uses Telegram's Bot API over Wi-Fi to send sensor alerts to your phone or receive remote commands (like toggling a relay) from a chat." },
+            { keywords: ["voice assistant project", "esp32 voice assistant"], reply: "A DIY voice assistant project typically pairs a microphone module with an ESP32-S3 (or sends audio to a cloud speech API over Wi-Fi) to recognize simple commands and trigger actions like lights or announcements." },
+            { keywords: ["smart dustbin"], reply: "A smart dustbin project uses an ultrasonic sensor to detect an approaching hand and a servo motor to automatically open the lid — a popular beginner automation build." },
+            { keywords: ["password lock", "keypad door lock"], reply: "A password door-lock project reads a PIN from a matrix keypad, checks it against a stored code, and triggers a servo or solenoid lock — often paired with an LCD to show entry status." },
+            { keywords: ["face recognition project", "face detection project"], reply: "Face detection/recognition projects usually run on an ESP32-CAM or a Raspberry Pi with a camera module, using onboard or cloud vision APIs to detect faces and trigger actions like unlocking a door." },
+            { keywords: ["qr scanner project"], reply: "A QR scanner project uses a camera module (like the ESP32-CAM) with a decoding library to read QR codes for tasks like attendance, inventory, or payment verification." },
+            { keywords: ["energy monitoring project"], reply: "An energy-monitoring project uses a current sensor (like the ACS712) and a voltage sensor together to calculate real-time power usage, often logged to the cloud for tracking electricity consumption." },
+            { keywords: ["industrial iot"], reply: "Industrial IoT (IIoT) projects connect factory-floor sensors and PLCs (often via Modbus or CAN) to a gateway microcontroller that forwards data to the cloud for monitoring, predictive maintenance, or automation." },
         ];
 
         /* ============================================================
-           MATCHING ENGINE
+           MATCHING / ANALYSIS ENGINE
+           This is the same "brain" used by the optional backend server
+           (see server.js) — kept here too so the app fully works standalone
+           with no server running. Instead of only picking the single
+           longest keyword match, it:
+             1. Collects EVERY KB entry the question touches on (not just
+                the best one), i.e. it identifies which components/topics
+                the question is actually about.
+             2. Detects "comparison intent" (vs / difference between /
+                compare / which is better...).
+             3. If a dedicated, hand-written comparison entry exists
+                (curated: true) it's used directly — that's still the
+                highest-quality answer.
+             4. Otherwise, if the question is a comparison and it recognizes
+                2+ distinct components that don't have a dedicated combo
+                entry, it composes a comparison on the fly from each
+                component's own definition — instead of just shrugging.
         ============================================================ */
+        const COMPARISON_INTENT_RE = /\bvs\b|\bversus\b|\bdifference(?:s)? between\b|\bcompar(?:e|ing|ison)\b|\bwhich (?:is|one is) better\b|\bbetter than\b/;
+
+        const ACRONYM_WORDS = new Set([
+            "dc", "ac", "pwm", "gpio", "adc", "dac", "i2c", "spi", "uart", "led",
+            "rgb", "ir", "pcb", "rtc", "gps", "rfid", "mqtt", "http", "https",
+            "esp", "stm", "pic", "avr", "ble", "can", "usb", "wifi", "pid",
+            "bms", "ota", "emi", "emc", "esd", "ic", "nfc", "lora", "eeprom"
+        ]);
+
         function normalize(text) {
             return ' ' + text.toLowerCase().replace(/[?.!,]/g, ' ').replace(/\s+/g, ' ').trim() + ' ';
         }
@@ -1338,31 +1649,102 @@
             return reply.replace(/\{name\}/g, tag);
         }
 
-        function getBotResponse(rawInput) {
-            const normalized = normalize(rawInput);
-            let best = null;
-            let bestScore = -1;
+        // Nicely capitalized display name for a KB entry, derived from its
+        // primary keyword (e.g. "esp32" -> "ESP32", "dc motor" -> "DC Motor").
+        function labelForEntry(entry) {
+            return entry.keywords[0].split(' ').map(function (word) {
+                if (/\d/.test(word) || ACRONYM_WORDS.has(word)) return word.toUpperCase();
+                return word.charAt(0).toUpperCase() + word.slice(1);
+            }).join(' ');
+        }
 
+        // First line (or two, if the first is just a bare headline) of a
+        // reply, trimmed to a tweet-ish length — used when stitching several
+        // definitions together into one synthesized comparison answer.
+        function shortBlurb(reply) {
+            const lines = reply.split('\n').map(function (l) { return l.trim(); }).filter(Boolean);
+            let text = lines[0] || '';
+            if (lines.length > 1 && (text.length < 40 || !/[.!]$/.test(text))) {
+                text = text + ' — ' + lines[1].replace(/^[•\-]\s*/, '');
+            }
+            if (text.length > 220) text = text.slice(0, 217).trim() + '…';
+            return text;
+        }
+
+        // Every KB entry the input touches on, each with the length of the
+        // longest keyword phrase of theirs that matched (used for ranking).
+        function collectMatches(normalized) {
+            const matches = [];
             for (const entry of KB) {
+                let bestLen = -1;
                 for (const kw of entry.keywords) {
                     const kwNorm = kw.trim().toLowerCase();
-                    if (normalized.includes(kwNorm)) {
-                        if (kwNorm.length > bestScore) {
-                            bestScore = kwNorm.length;
-                            best = entry;
-                        }
+                    if (normalized.includes(kwNorm) && kwNorm.length > bestLen) {
+                        bestLen = kwNorm.length;
                     }
                 }
+                if (bestLen >= 0) matches.push({ entry: entry, len: bestLen });
+            }
+            return matches;
+        }
+
+        // Compose a comparison from two or more individually-known entries
+        // when there's no dedicated, hand-written combo entry for them.
+        function synthesizeComparison(entries) {
+            const sections = entries.map(function (entry) {
+                return labelForEntry(entry) + '\n' + shortBlurb(entry.reply);
+            });
+            return "I don't have a dedicated side-by-side for that exact pairing yet, so here's what I know about each individually:\n\n" +
+                sections.join('\n\n') +
+                "\n\nAsk me about either one directly for more depth.";
+        }
+
+        function getBotResponse(rawInput) {
+            const normalized = normalize(rawInput);
+            const matches = collectMatches(normalized);
+
+            if (matches.length === 0) {
+                const fallback = [
+                    "I'm not picking up that signal. Could you specify the component, protocol, or circuit concept you need help with?",
+                    "That one's outside my current knowledge base — try asking about a specific component, sensor, or microcontroller.",
+                    "I couldn't match that to anything in my circuit library. Try a keyword like \"i2c\", \"esp32\", or \"servo motor\"."
+                ];
+                if (COMPARISON_INTENT_RE.test(normalized)) {
+                    return personalize("Sounds like you're comparing two things, but I didn't recognize either one by name — try naming the exact components, boards, or protocols, e.g. \"ESP32 vs STM32\".");
+                }
+                return personalize(fallback[Math.floor(Math.random() * fallback.length)]);
             }
 
-            if (best) return personalize(best.reply);
+            // Single best match = the entry whose matched keyword phrase is
+            // longest (most specific). Ties keep whichever appeared first
+            // in the KB, same as before.
+            let best = matches[0];
+            for (const m of matches) if (m.len > best.len) best = m;
 
-            const fallback = [
-                "I'm not picking up that signal. Could you specify the component, protocol, or circuit concept you need help with?",
-                "That one's outside my current knowledge base — try asking about a specific component, sensor, or microcontroller.",
-                "I couldn't match that to anything in my circuit library. Try a keyword like \"i2c\", \"esp32\", or \"servo motor\"."
-            ];
-            return personalize(fallback[Math.floor(Math.random() * fallback.length)]);
+            // A hand-written comparison entry is always the best answer for
+            // its exact pairing — never overridden by on-the-fly synthesis.
+            if (best.entry.curated) return personalize(best.entry.reply);
+
+            if (COMPARISON_INTENT_RE.test(normalized)) {
+                const seen = new Set();
+                const distinct = [];
+                matches
+                    .filter(function (m) { return !m.entry.meta && !m.entry.generic; })
+                    .sort(function (a, b) { return b.len - a.len; })
+                    .forEach(function (m) {
+                        if (!seen.has(m.entry)) { seen.add(m.entry); distinct.push(m.entry); }
+                    });
+
+                if (distinct.length >= 2) {
+                    return personalize(synthesizeComparison(distinct.slice(0, 3)));
+                }
+                if (distinct.length === 1) {
+                    return personalize("I don't have a dedicated comparison for that exact pairing yet, but here's what I know about " + labelForEntry(distinct[0]) + ":\n\n" + distinct[0].reply + "\n\nName the other component directly and I can tell you about that one too.");
+                }
+                return personalize("Sounds like you're comparing two things, but I didn't recognize either one by name — try naming the exact components, boards, or protocols, e.g. \"ESP32 vs STM32\".");
+            }
+
+            return personalize(best.entry.reply);
         }
     </script>
 </body>
